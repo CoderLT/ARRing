@@ -7,14 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A034E0C81EB8F13A00D11AEA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A034E0C61EB8F13A00D11AEA /* Main.storyboard */; };
+		A034E0CA1EB8F22100D11AEA /* jiezhi4.scn in Resources */ = {isa = PBXBuildFile; fileRef = A034E0C91EB8F22100D11AEA /* jiezhi4.scn */; };
 		A039B7C71EB7985500ED71C9 /* ring.png in Resources */ = {isa = PBXBuildFile; fileRef = A039B7C61EB7985500ED71C9 /* ring.png */; };
+		A039B8161EB8E72E00ED71C9 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = A039B8131EB8E72E00ED71C9 /* art.scnassets */; };
+		A039B8171EB8E72E00ED71C9 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A039B8151EB8E72E00ED71C9 /* GameViewController.m */; };
+		A039B8191EB8E83100ED71C9 /* WechatIMG20.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = A039B8181EB8E83100ED71C9 /* WechatIMG20.jpeg */; };
 		A040CB861EB5769B008721F5 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A040CB851EB5769B008721F5 /* libc++.tbd */; };
 		A047D5BB1EB4DD3C00C4E2D9 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = A047D5BA1EB4DD3C00C4E2D9 /* main.m */; };
 		A047D5BE1EB4DD3C00C4E2D9 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A047D5BD1EB4DD3C00C4E2D9 /* AppDelegate.m */; };
 		A047D5C11EB4DD3C00C4E2D9 /* ViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A047D5C01EB4DD3C00C4E2D9 /* ViewController.mm */; };
-		A047D5C41EB4DD3C00C4E2D9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A047D5C21EB4DD3C00C4E2D9 /* Main.storyboard */; };
 		A047D5C61EB4DD3C00C4E2D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A047D5C51EB4DD3C00C4E2D9 /* Assets.xcassets */; };
-		A047D5C91EB4DD3C00C4E2D9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A047D5C71EB4DD3C00C4E2D9 /* LaunchScreen.storyboard */; };
 		A047D5D51EB4E23300C4E2D9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5D41EB4E23300C4E2D9 /* AVFoundation.framework */; };
 		A047D5D71EB4E27700C4E2D9 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5D61EB4E27700C4E2D9 /* AssetsLibrary.framework */; };
 		A047D5DB1EB4E29F00C4E2D9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5DA1EB4E29F00C4E2D9 /* CoreMedia.framework */; };
@@ -24,10 +27,17 @@
 		A047D5EE1EB5749600C4E2D9 /* myImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A047D5EB1EB5749600C4E2D9 /* myImage.cpp */; };
 		A047D5F01EB5753800C4E2D9 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5EF1EB5753800C4E2D9 /* libjpeg.a */; };
 		A047D5F21EB5757400C4E2D9 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5F11EB5757400C4E2D9 /* libturbojpeg.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A080E9491EB8EFEF00A1F1BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A080E9471EB8EFEF00A1F1BD /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A034E0C71EB8F13A00D11AEA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A034E0C91EB8F22100D11AEA /* jiezhi4.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = jiezhi4.scn; sourceTree = "<group>"; };
 		A039B7C61EB7985500ED71C9 /* ring.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ring.png; sourceTree = "<group>"; };
+		A039B8131EB8E72E00ED71C9 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
+		A039B8141EB8E72E00ED71C9 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
+		A039B8151EB8E72E00ED71C9 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		A039B8181EB8E83100ED71C9 /* WechatIMG20.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = WechatIMG20.jpeg; sourceTree = "<group>"; };
 		A040CB851EB5769B008721F5 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		A047D5B61EB4DD3C00C4E2D9 /* ARRing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARRing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A047D5BA1EB4DD3C00C4E2D9 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -35,9 +45,7 @@
 		A047D5BD1EB4DD3C00C4E2D9 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		A047D5BF1EB4DD3C00C4E2D9 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		A047D5C01EB4DD3C00C4E2D9 /* ViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ViewController.mm; sourceTree = "<group>"; };
-		A047D5C31EB4DD3C00C4E2D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		A047D5C51EB4DD3C00C4E2D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A047D5C81EB4DD3C00C4E2D9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A047D5CA1EB4DD3C00C4E2D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A047D5D41EB4E23300C4E2D9 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		A047D5D61EB4E27700C4E2D9 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -52,6 +60,7 @@
 		A047D5EC1EB5749600C4E2D9 /* myImage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myImage.hpp; sourceTree = "<group>"; };
 		A047D5EF1EB5753800C4E2D9 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		A047D5F11EB5757400C4E2D9 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
+		A080E9481EB8EFEF00A1F1BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ARRing/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +102,11 @@
 		A047D5B81EB4DD3C00C4E2D9 /* ARRing */ = {
 			isa = PBXGroup;
 			children = (
+				A034E0C91EB8F22100D11AEA /* jiezhi4.scn */,
+				A039B8181EB8E83100ED71C9 /* WechatIMG20.jpeg */,
+				A039B8131EB8E72E00ED71C9 /* art.scnassets */,
+				A039B8141EB8E72E00ED71C9 /* GameViewController.h */,
+				A039B8151EB8E72E00ED71C9 /* GameViewController.m */,
 				A039B7C61EB7985500ED71C9 /* ring.png */,
 				A047D5BC1EB4DD3C00C4E2D9 /* AppDelegate.h */,
 				A047D5BD1EB4DD3C00C4E2D9 /* AppDelegate.m */,
@@ -104,9 +118,9 @@
 				A047D5EC1EB5749600C4E2D9 /* myImage.hpp */,
 				A047D5DC1EB4E9DF00C4E2D9 /* GestureRecognizer.cpp */,
 				A047D5DD1EB4E9DF00C4E2D9 /* GestureRecognizer.hpp */,
-				A047D5C21EB4DD3C00C4E2D9 /* Main.storyboard */,
+				A034E0C61EB8F13A00D11AEA /* Main.storyboard */,
+				A080E9471EB8EFEF00A1F1BD /* LaunchScreen.storyboard */,
 				A047D5C51EB4DD3C00C4E2D9 /* Assets.xcassets */,
-				A047D5C71EB4DD3C00C4E2D9 /* LaunchScreen.storyboard */,
 				A047D5CA1EB4DD3C00C4E2D9 /* Info.plist */,
 				A047D5B91EB4DD3C00C4E2D9 /* Supporting Files */,
 			);
@@ -175,7 +189,7 @@
 					A047D5B51EB4DD3C00C4E2D9 = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = E4PD5DT5TR;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -202,9 +216,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A047D5C91EB4DD3C00C4E2D9 /* LaunchScreen.storyboard in Resources */,
 				A047D5C61EB4DD3C00C4E2D9 /* Assets.xcassets in Resources */,
-				A047D5C41EB4DD3C00C4E2D9 /* Main.storyboard in Resources */,
+				A039B8161EB8E72E00ED71C9 /* art.scnassets in Resources */,
+				A039B8191EB8E83100ED71C9 /* WechatIMG20.jpeg in Resources */,
+				A034E0C81EB8F13A00D11AEA /* Main.storyboard in Resources */,
+				A034E0CA1EB8F22100D11AEA /* jiezhi4.scn in Resources */,
+				A080E9491EB8EFEF00A1F1BD /* LaunchScreen.storyboard in Resources */,
 				A039B7C71EB7985500ED71C9 /* ring.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -218,6 +235,7 @@
 			files = (
 				A047D5C11EB4DD3C00C4E2D9 /* ViewController.mm in Sources */,
 				A047D5ED1EB5749600C4E2D9 /* handGesture.cpp in Sources */,
+				A039B8171EB8E72E00ED71C9 /* GameViewController.m in Sources */,
 				A047D5DE1EB4E9DF00C4E2D9 /* GestureRecognizer.cpp in Sources */,
 				A047D5EE1EB5749600C4E2D9 /* myImage.cpp in Sources */,
 				A047D5BE1EB4DD3C00C4E2D9 /* AppDelegate.m in Sources */,
@@ -228,20 +246,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		A047D5C21EB4DD3C00C4E2D9 /* Main.storyboard */ = {
+		A034E0C61EB8F13A00D11AEA /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A047D5C31EB4DD3C00C4E2D9 /* Base */,
+				A034E0C71EB8F13A00D11AEA /* Base */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		A047D5C71EB4DD3C00C4E2D9 /* LaunchScreen.storyboard */ = {
+		A080E9471EB8EFEF00A1F1BD /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				A047D5C81EB4DD3C00C4E2D9 /* Base */,
+				A080E9481EB8EFEF00A1F1BD /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -357,6 +376,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.coderlt.ARRing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d671a9f2-bf2a-494b-a38e-9e2b914196bf";
+				PROVISIONING_PROFILE_SPECIFIER = ARRingDev;
 			};
 			name = Debug;
 		};
@@ -380,6 +401,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.coderlt.ARRing;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "d671a9f2-bf2a-494b-a38e-9e2b914196bf";
+				PROVISIONING_PROFILE_SPECIFIER = ARRingDev;
 			};
 			name = Release;
 		};

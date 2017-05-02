@@ -36,6 +36,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    self.navigationItem.title = @"摇一摇进入调试模式";
     
     CGFloat h = self.view.frame.size.width * 640 / 480;
     self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0,
@@ -61,7 +62,20 @@
     
     [self.videoCamera start];
 }
-
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    
+    [self.videoCamera stop];
+    self.videoCamera.delegate = nil;
+    
+    AVCaptureDevice *device = [self cameraWithPosition:AVCaptureDevicePositionBack];
+    if ([device hasTorch] && [device hasFlash]){
+        [device lockForConfiguration:nil];
+        [device setTorchMode:AVCaptureTorchModeOff];
+        [device setFlashMode:AVCaptureFlashModeOff];
+        [device unlockForConfiguration];
+    }
+}
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     AVCaptureDevice *device = [self cameraWithPosition:AVCaptureDevicePositionBack];
     if ([device hasTorch] && [device hasFlash]){
@@ -83,7 +97,10 @@
     }
     return;  
 }
-
+- (void)setShowDebug:(BOOL)showDebug {
+    _showDebug = showDebug;
+    self.ringImageView.alpha = _showDebug ? 0.5f : 1.0f;
+}
 //前后摄像头
 - (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
@@ -105,17 +122,18 @@
     cv::Point2f center = (ringPos1 + ringPos2) * (0.5 * self.videoView.frame.size.width / image.cols);
     float width = sqrtf((ringPos2.x - ringPos1.x) * (ringPos2.x - ringPos1.x) + (ringPos2.y - ringPos1.y) * (ringPos2.y - ringPos1.y)) * (self.videoView.frame.size.width / image.cols);
     float angle = atanf((ringPos2.y - ringPos1.y)/(ringPos2.x - ringPos1.x));
+    __weak typeof(self) weakSelf = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        self.ringImageView.transform = CGAffineTransformIdentity;
-        self.ringImageView.frame = CGRectMake(0, 0, width, self.ringImageView.image.size.height * width / self.ringImageView.image.size.width);
-        self.ringImageView.center = CGPointMake(center.x, center.y);
-        self.ringImageView.transform = CGAffineTransformMakeRotation(angle);
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.ringImageView.transform = CGAffineTransformIdentity;
+        strongSelf.ringImageView.frame = CGRectMake(0, 0, width, self.ringImageView.image.size.height * width / self.ringImageView.image.size.width);
+        strongSelf.ringImageView.center = CGPointMake(center.x, center.y);
+        strongSelf.ringImageView.transform = CGAffineTransformMakeRotation(angle);
     });
     TE(DetectAndAnimateFaces);
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [self.videoCamera stop];
     self.videoCamera.delegate = nil;
 }

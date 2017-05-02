@@ -23,6 +23,8 @@
 #define RGB(r, g, b) RGBA(r, g, b, 255)
 #define RGBA(r, g, b, a) Scalar(b, g, r, a)
 
+#define ColorWhite RGB(255,255,255)
+#define ColorBlack RGB(0,0,0)
 #define ColorGreen RGB(0, 255, 0)
 #define ColorBlue RGB(0, 0, 255)
 #define ColorRed RGB(255, 0, 0)
@@ -31,6 +33,9 @@
 #define ColorPlink RGB(255,192,203)
 #define ColorGold RGB(255,215,0)
 #define ColorMagenta RGB(255,0,255)
+
+#define setDefectError(d) d[3] = -1
+#define isDefectError(d) (d[3] < 0)
 
 Point2f ringPos1 = Point2f(0, 0), ringPos2 = Point2f(0, 0);
 bool showDebugMsg = false;
@@ -187,10 +192,16 @@ void myDrawContours(MyImage *m,HandGesture *hg)
         Point ptFar(contours[v[2]]);
         
         if (showDebugMsg) {
+            if (isDefectError(v)) {
+                circle(m->src, ptFar, 3, ColorBlack, 2);
+            }
+            else {
+                circle(src, ptFar, 2, ColorMagenta, 2);
+            }
+            
             //        putText(src, intToString(defectIdx), ptStart - Point(0,30), 0, 1.2f, Scalar(200,200,200), 2);
             //        circle(src, ptStart, 2, RGB(255, 255, 0), 2);
             //        circle(src, ptEnd, 2, RGB(255, 255, 0), 2);
-            circle(src, ptFar, 2, ColorMagenta, 2);
             //
             //        Point center = (ptFar + contours[preV[2]]) * 0.5;
             //        Point ringCenter = center + (ptStart - center) * 0.1;
@@ -198,6 +209,10 @@ void myDrawContours(MyImage *m,HandGesture *hg)
             //        line(src, contours[preV[2]], ptFar, RGB(0, 0, 255), 1);
             //        line(src, ptStart, center, RGB(0, 0, 255), 1);
             //        circle(src, ringCenter, 2, RGB(0, 0, 255), 2);
+        }
+        
+        if (isDefectError(v) && isDefectError(preV)) {
+            continue;
         }
         
         Range range1 = v[0] < v[2] ? Range(v[0], v[2]) : Range(0, v[2]);
@@ -229,13 +244,46 @@ void myDrawContours(MyImage *m,HandGesture *hg)
             Point2f pos1 = crossPoint2(lineH, contours, range1);
             Point2f pos2 = crossPoint2(lineH, contours, range2);
             if (showDebugMsg) {
-                cv::line(src, pos1, pos2, ColorGold, 4);
+//                cv::line(src, pos1, pos2, ColorGold, 4);
             }
             
             if (defectIdx == 2) {
                 ringPos1 = pos1;
                 ringPos2 = pos2;
             }
+        }
+    }
+}
+
+// 计算两点的距离
+float distanceP2P(Point2f a, Point2f b)
+{
+    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+
+/*******************************************************************************************
+ * 函数名称：getAngle
+ * 功能说明：获取角度，三个点，一个为顶点，计算这个顶点的角度，用的是角度制
+ * 输入参数：s，f，e代表描述凸包缺陷的单个坐标，s->起始坐标，f->角点坐标，e->结束坐标
+ * 输出参数：float 类型的角度
+ ********************************************************************************************/
+float getAngle(Point s, Point f, Point e)
+{
+    float dot = (s.x - f.x) * (e.x - f.x) + (s.y - f.y) * (e.y - f.y);
+    return acos(dot / (distanceP2P(f, s) * distanceP2P(f, e))) * 180 / M_PI;
+}
+
+void defectsFilter(HandGesture *hg) {
+    vector<Point> contours = hg->contours[hg->cIdx];
+    vector<Vec4i>& defects = hg->defects[hg->cIdx];
+    
+    for (int defectIdx = (int)defects.size() - 1; defectIdx >= 0; defectIdx--) {
+        Vec4i& v = defects.at(defectIdx);
+        Point ptStart(contours[v[0]]);
+        Point ptEnd(contours[v[1]]);
+        Point ptFar(contours[v[2]]);
+        if (getAngle(ptStart, ptFar, ptEnd) > 90) {
+            setDefectError(v);
         }
     }
 }
@@ -277,6 +325,7 @@ void makeContours(MyImage *m, HandGesture* hg)
         if (hg->hullI[hg->cIdx].size()>3 ) {
             convexityDefects(hg->contours[hg->cIdx],hg->hullI[hg->cIdx],hg->defects[hg->cIdx]);	//计算凸包缺陷
             //hg->eleminateDefects(m);															//清除缺陷
+            defectsFilter(hg);
         }
 //        hg->getFingerNumber(m);
 //        bool isHand = hg->detectIfHand();														//检测是否有手
@@ -285,6 +334,7 @@ void makeContours(MyImage *m, HandGesture* hg)
 //            hg->getFingerTips(m);																//获取指尖
 //            hg->drawFingerTips(m);																//绘制指尖
 //        }
+        
         myDrawContours(m, hg);
     }
 }
@@ -359,7 +409,9 @@ void gestureRecognizer(cv::Mat& image, bool debug) {
     SkinRGB(&m);
     makeContours(&m, &hg);
     
-    pyrDown(m.bw,m.bw);
-    pyrDown(m.bw,m.bw);
-    cvtColor(m.bw, m.src(Rect({m.src.cols - m.bw.cols, 0}, m.bw.size())), CV_GRAY2RGBA);
+    if (showDebugMsg) {
+        pyrDown(m.bw,m.bw);
+        pyrDown(m.bw,m.bw);
+        cvtColor(m.bw, m.src(Rect({m.src.cols - m.bw.cols, 0}, m.bw.size())), CV_GRAY2RGBA);
+    }
 }

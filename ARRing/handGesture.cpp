@@ -11,494 +11,494 @@ using namespace cv;
 using namespace std;
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºHandGesture
-* ¹¦ÄÜËµÃ÷£ºÖØÖÃ±äÁ¿µÄÖµ
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šHandGesture
+ * åŠŸèƒ½è¯´æ˜ï¼šé‡ç½®å˜é‡çš„å€¼
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 HandGesture::HandGesture()
 {
-	frameNumber=0;					//Ö¡ÊıÁ¿	
-	nrNoFinger=0;					//
-	fontFace = FONT_HERSHEY_PLAIN;	//×ÖÌå
+    frameNumber=0;					//å¸§æ•°é‡
+    nrNoFinger=0;					//
+    fontFace = FONT_HERSHEY_PLAIN;	//å­—ä½“
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºinitVectors
-* ¹¦ÄÜËµÃ÷£º³õÊ¼»¯ÏòÁ¿£¬Õâ¼¸¸öÏòÁ¿¶¼ÊÇºÍÍ¹°üÏà¹ØµÄ²ÎÊı
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šinitVectors
+ * åŠŸèƒ½è¯´æ˜ï¼šåˆå§‹åŒ–å‘é‡ï¼Œè¿™å‡ ä¸ªå‘é‡éƒ½æ˜¯å’Œå‡¸åŒ…ç›¸å…³çš„å‚æ•°
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::initVectors()
 {
-	hullI=vector<vector<int> >(contours.size());						
-	hullP=vector<vector<Point> >(contours.size());
-	defects=vector<vector<Vec4i> > (contours.size());	//È±Ïİ
+    hullI=vector<vector<int> >(contours.size());
+    hullP=vector<vector<Point> >(contours.size());
+    defects=vector<vector<Vec4i> > (contours.size());	//ç¼ºé™·
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºanalyzeContours
-* ¹¦ÄÜËµÃ÷£º·ÖÎöÂÖÀª£¬
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šanalyzeContours
+ * åŠŸèƒ½è¯´æ˜ï¼šåˆ†æè½®å»“ï¼Œ
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::analyzeContours()
 {
-	bRect_height=bRect.height;
-	bRect_width=bRect.width;
+    bRect_height=bRect.height;
+    bRect_width=bRect.width;
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºbool2string
-* ¹¦ÄÜËµÃ÷£º½«²¼¶ûĞÍµÄÊı¾İ×ª»»³ÉÏàÓ¦µÄ×Ö·û´®
-* ÊäÈë²ÎÊı£ºtf->²¼¶ûĞÍÊı¾İ
-* Êä³ö²ÎÊı£º·µ»Ø×Ö·û´®
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šbool2string
+ * åŠŸèƒ½è¯´æ˜ï¼šå°†å¸ƒå°”å‹çš„æ•°æ®è½¬æ¢æˆç›¸åº”çš„å­—ç¬¦ä¸²
+ * è¾“å…¥å‚æ•°ï¼štf->å¸ƒå°”å‹æ•°æ®
+ * è¾“å‡ºå‚æ•°ï¼šè¿”å›å­—ç¬¦ä¸²
+ ********************************************************************************************/
 string HandGesture::bool2string(bool tf)
 {
-	if(tf)
-		return "true";
-	else
-		return "false";
+    if(tf)
+        return "true";
+    else
+        return "false";
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºintToString
-* ¹¦ÄÜËµÃ÷£º½«ÕûĞÍÊı¾İ×ª»»Îª×Ö·û´®
-* ÊäÈë²ÎÊı£ºnumber->ÕûĞÍÊı¾İ
-* Êä³ö²ÎÊı£º·µ»Ø×Ö·û´®
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šintToString
+ * åŠŸèƒ½è¯´æ˜ï¼šå°†æ•´å‹æ•°æ®è½¬æ¢ä¸ºå­—ç¬¦ä¸²
+ * è¾“å…¥å‚æ•°ï¼šnumber->æ•´å‹æ•°æ®
+ * è¾“å‡ºå‚æ•°ï¼šè¿”å›å­—ç¬¦ä¸²
+ ********************************************************************************************/
 string HandGesture::intToString(int number)
 {
-	stringstream ss;
-	ss << number;
-	string str = ss.str();
-	return str;
+    stringstream ss;
+    ss << number;
+    string str = ss.str();
+    return str;
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºprintGestureInfo
-* ¹¦ÄÜËµÃ÷£ºÔÚÔ­Í¼ÖĞÏÔÊ¾Ê¶±ğ³öÀ´µÄĞÅÏ¢
-* ÊäÈë²ÎÊı£ºsrc->ĞèÒªÏÔÊ¾¼ì²âĞÅÏ¢µÄÈıÍ¨µÀMatÍ¼ÏñÊı¾İ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šprintGestureInfo
+ * åŠŸèƒ½è¯´æ˜ï¼šåœ¨åŸå›¾ä¸­æ˜¾ç¤ºè¯†åˆ«å‡ºæ¥çš„ä¿¡æ¯
+ * è¾“å…¥å‚æ•°ï¼šsrc->éœ€è¦æ˜¾ç¤ºæ£€æµ‹ä¿¡æ¯çš„ä¸‰é€šé“Matå›¾åƒæ•°æ®
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::printGestureInfo(Mat src)
 {
-	int fontFace = FONT_HERSHEY_PLAIN;						//×ÖÌå	
-	Scalar fColor(245,200,200);								//×ÖÌåÑÕÉ«	
-	int xpos=src.cols/1.5;									//ÔÚÍ¼ÏñÉÏÏÔÊ¾µÄÎ»ÖÃ×ø±ê
-	int ypos=src.rows/1.6;									//
-	float fontSize=0.7f;									//×ÖÌå´óĞ¡
-	int lineChange=14;										//Ã¿ÏÔÊ¾ÍêÒ»ĞĞ×Ö·û£¬ĞèÑ½xpos×ø±êÏòÏÂÔö¼ÓµÄÏñËØĞĞÊı
-	string info= "Figure info:";
-	putText(src,info,Point(ypos,xpos),fontFace,fontSize,fColor);
-	xpos+=lineChange;
-	info=string("Number of defects: ") + string(intToString(nrOfDefects)) ;//Ö¸·ìµÄ¸öÊı
-	putText(src,info,Point(ypos,xpos),fontFace,fontSize  ,fColor);
-	xpos+=lineChange;
-	info=string("bounding box height, width ") + string(intToString(bRect_height)) + string(" , ") +  string(intToString(bRect_width)) ;
-	putText(src,info,Point(ypos,xpos),fontFace,fontSize ,fColor); //ÊÖ²¿ÂÖÀªÍâ½ç¾ØĞÎµÄ¸ß¿í
-	xpos+=lineChange;
-	info=string("Is hand: ") + string(bool2string(isHand));		
-	putText(src,info,Point(ypos,xpos),fontFace,fontSize  ,fColor);//Êä³öÊÇ·ñÓĞÊÖ£¬trueÎª¼ì²âµ½ÊÖ£¬falseÎªÎ´¼ì²âµ½ÊÖ
+    int fontFace = FONT_HERSHEY_PLAIN;						//å­—ä½“
+    Scalar fColor(245,200,200);								//å­—ä½“é¢œè‰²
+    int xpos=src.cols/1.5;									//åœ¨å›¾åƒä¸Šæ˜¾ç¤ºçš„ä½ç½®åæ ‡
+    int ypos=src.rows/1.6;									//
+    float fontSize=0.7f;									//å­—ä½“å¤§å°
+    int lineChange=14;										//æ¯æ˜¾ç¤ºå®Œä¸€è¡Œå­—ç¬¦ï¼Œéœ€å‘€xposåæ ‡å‘ä¸‹å¢åŠ çš„åƒç´ è¡Œæ•°
+    string info= "Figure info:";
+    putText(src,info,Point(ypos,xpos),fontFace,fontSize,fColor);
+    xpos+=lineChange;
+    info=string("Number of defects: ") + string(intToString(nrOfDefects)) ;//æŒ‡ç¼çš„ä¸ªæ•°
+    putText(src,info,Point(ypos,xpos),fontFace,fontSize  ,fColor);
+    xpos+=lineChange;
+    info=string("bounding box height, width ") + string(intToString(bRect_height)) + string(" , ") +  string(intToString(bRect_width)) ;
+    putText(src,info,Point(ypos,xpos),fontFace,fontSize ,fColor); //æ‰‹éƒ¨è½®å»“å¤–ç•ŒçŸ©å½¢çš„é«˜å®½
+    xpos+=lineChange;
+    info=string("Is hand: ") + string(bool2string(isHand));
+    putText(src,info,Point(ypos,xpos),fontFace,fontSize  ,fColor);//è¾“å‡ºæ˜¯å¦æœ‰æ‰‹ï¼Œtrueä¸ºæ£€æµ‹åˆ°æ‰‹ï¼Œfalseä¸ºæœªæ£€æµ‹åˆ°æ‰‹
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºdetectIfHand
-* ¹¦ÄÜËµÃ÷£º¼ì²âÊÇ·ñÓĞÊÖ
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
-bool HandGesture::detectIfHand() 
+ * å‡½æ•°åç§°ï¼šdetectIfHand
+ * åŠŸèƒ½è¯´æ˜ï¼šæ£€æµ‹æ˜¯å¦æœ‰æ‰‹
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
+bool HandGesture::detectIfHand()
 {
-	analyzeContours();				//ÂÖÀª·ÖÎö£¬ÆäÊµÖ»Æğµ½¸øÈ«¾Ö±äÁ¿¸´ÖÆµÄ¹¤×÷
-	double h = bRect_height; 
-	double w = bRect_width;
-	isHand=true;
-	if(fingerTips.size() > 5 )		//Ê¶±ğ³öÀ´µÄÖ¸¼â´óÓÚ5¸öµÄÊ±ºò
-	{
-		isHand=false;
-	}
-	else if(h==0 || w == 0)			//ÊÖ²¿ÂÖÀªÍâ½Ó¾ØĞÎÎªµÄ¿í¸ßÎª0
-	{
-		isHand=false;
-	}
-	else if(h/w > 4 || w/h >4)		//ÊÖ²¿ÂÖÀªÍâ½Ó¾ØĞÎÎªµÄ¿í¸ß±ÈÀı¹ı´óµÄÊ±ºò
-	{
-		isHand=false;	
-	}
-	else if(bRect.x<20)				//ÊÖ²¿ÂÖÀªÍâ½Ó¾ØĞÎÎªµÄx×ø±êÌ«Ğ¡£¨Ì«¿¿½ü×ó±ß½ç£©
-	{
-		isHand=false;	
-	}	
-	return isHand;					//³ıÁËÒÔÉÏÔ­Òò·µ»ØÊÇ¸öÊÖ
+    analyzeContours();				//è½®å»“åˆ†æï¼Œå…¶å®åªèµ·åˆ°ç»™å…¨å±€å˜é‡å¤åˆ¶çš„å·¥ä½œ
+    double h = bRect_height;
+    double w = bRect_width;
+    isHand=true;
+    if(fingerTips.size() > 5 )		//è¯†åˆ«å‡ºæ¥çš„æŒ‡å°–å¤§äº5ä¸ªçš„æ—¶å€™
+    {
+        isHand=false;
+    }
+    else if(h==0 || w == 0)			//æ‰‹éƒ¨è½®å»“å¤–æ¥çŸ©å½¢ä¸ºçš„å®½é«˜ä¸º0
+    {
+        isHand=false;
+    }
+    else if(h/w > 4 || w/h >4)		//æ‰‹éƒ¨è½®å»“å¤–æ¥çŸ©å½¢ä¸ºçš„å®½é«˜æ¯”ä¾‹è¿‡å¤§çš„æ—¶å€™
+    {
+        isHand=false;
+    }
+    else if(bRect.x<20)				//æ‰‹éƒ¨è½®å»“å¤–æ¥çŸ©å½¢ä¸ºçš„xåæ ‡å¤ªå°ï¼ˆå¤ªé è¿‘å·¦è¾¹ç•Œï¼‰
+    {
+        isHand=false;
+    }
+    return isHand;					//é™¤äº†ä»¥ä¸ŠåŸå› è¿”å›æ˜¯ä¸ªæ‰‹
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºdistanceP2P
-* ¹¦ÄÜËµÃ÷£º¼ÆËãÁ½µãµÄ¾àÀë
-* ÊäÈë²ÎÊı£ºa£¬b->¶şÎ¬×ø±êµã
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šdistanceP2P
+ * åŠŸèƒ½è¯´æ˜ï¼šè®¡ç®—ä¸¤ç‚¹çš„è·ç¦»
+ * è¾“å…¥å‚æ•°ï¼šaï¼Œb->äºŒç»´åæ ‡ç‚¹
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 float HandGesture::distanceP2P(Point a, Point b)
 {
-	float d= sqrt(fabs( pow(a.x-b.x,2) + pow(a.y-b.y,2) )) ;  
-	return d;
+    float d= sqrt(fabs( pow(a.x-b.x,2) + pow(a.y-b.y,2) )) ;
+    return d;
 }
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºremoveRedundantFingerTips
-* ¹¦ÄÜËµÃ÷£ºÉ¾³ıÌ«½Ó½ü±Ë´ËµÄÖ¸¼â,(Õâ¸öº¯ÊıÄ¿Ç°»¹ÓĞÈ±Ïİ£¬×÷ÓÃ²»´ó£¡£¡£¡£¡£¡£¡£¡£¡)
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šremoveRedundantFingerTips
+ * åŠŸèƒ½è¯´æ˜ï¼šåˆ é™¤å¤ªæ¥è¿‘å½¼æ­¤çš„æŒ‡å°–,(è¿™ä¸ªå‡½æ•°ç›®å‰è¿˜æœ‰ç¼ºé™·ï¼Œä½œç”¨ä¸å¤§ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼)
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::removeRedundantFingerTips()
 {
-	vector<Point> newFingers;
-	for(int i=0;i<fingerTips.size();i++)
-	{
-		for(int j=i;j<fingerTips.size();j++)
-		{
-			if(distanceP2P(fingerTips[i],fingerTips[j])<10 && i!=j)
-			{
-				cout << "he" << endl;
-			}
-			else
-			{
-				newFingers.push_back(fingerTips[i]);	
-				break;
-			}	
-		}	
-	}
-	fingerTips.swap(newFingers);
+    vector<Point> newFingers;
+    for(int i=0;i<fingerTips.size();i++)
+    {
+        for(int j=i;j<fingerTips.size();j++)
+        {
+            if(distanceP2P(fingerTips[i],fingerTips[j])<10 && i!=j)
+            {
+                cout << "he" << endl;
+            }
+            else
+            {
+                newFingers.push_back(fingerTips[i]);
+                break;
+            }
+        }
+    }
+    fingerTips.swap(newFingers);
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºcomputeFingerNumber
-* ¹¦ÄÜËµÃ÷£º¼ÆËãÊÖÖ¸µÄÊıÁ¿£¬´ÓºÜ¶ÔÖ¡Í¼ÏñÊ¶±ğµÄ½á¹ûÖĞ£¬¿´¿´Ê¶±ğ³öµÄÖ¸Í·Çé¿öÄÇÖÖ×î¶à´Î
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šcomputeFingerNumber
+ * åŠŸèƒ½è¯´æ˜ï¼šè®¡ç®—æ‰‹æŒ‡çš„æ•°é‡ï¼Œä»å¾ˆå¯¹å¸§å›¾åƒè¯†åˆ«çš„ç»“æœä¸­ï¼Œçœ‹çœ‹è¯†åˆ«å‡ºçš„æŒ‡å¤´æƒ…å†µé‚£ç§æœ€å¤šæ¬¡
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::computeFingerNumber()
 {
-	std::sort(fingerNumbers.begin(), fingerNumbers.end());   //¸øÊı¾İÅÅĞò£¬´ÓĞ¡´óÅÅĞò
-	int frequentNr;	
-	int thisNumberFreq=1;
-	int highestFreq=1;
-	frequentNr=fingerNumbers[0];
-	for(int i=1;i<fingerNumbers.size(); i++)
-	{
-		if(fingerNumbers[i-1]!=fingerNumbers[i])
-		{
-			if(thisNumberFreq>highestFreq)
-			{
-				frequentNr=fingerNumbers[i-1];	
-				highestFreq=thisNumberFreq;
-			}
-			thisNumberFreq=0;	
-		}
-		thisNumberFreq++;	
-	}
-	if(thisNumberFreq>highestFreq)
-	{
-		frequentNr=fingerNumbers[fingerNumbers.size()-1];	
-	}
-	mostFrequentFingerNumber=frequentNr;	//14Ö¡Í¼ÏñÊ¶±ğ³öÊÖÖ¸ÊıÁ¿ÆµÂÊ³öÏÖ×î¸ßµÄÅĞ¶¨Îª×î¿ÉÄÜµÄÊÖÖ¸ÊıÁ¿
+    std::sort(fingerNumbers.begin(), fingerNumbers.end());   //ç»™æ•°æ®æ’åºï¼Œä»å°å¤§æ’åº
+    int frequentNr;
+    int thisNumberFreq=1;
+    int highestFreq=1;
+    frequentNr=fingerNumbers[0];
+    for(int i=1;i<fingerNumbers.size(); i++)
+    {
+        if(fingerNumbers[i-1]!=fingerNumbers[i])
+        {
+            if(thisNumberFreq>highestFreq)
+            {
+                frequentNr=fingerNumbers[i-1];
+                highestFreq=thisNumberFreq;
+            }
+            thisNumberFreq=0;
+        }
+        thisNumberFreq++;
+    }
+    if(thisNumberFreq>highestFreq)
+    {
+        frequentNr=fingerNumbers[fingerNumbers.size()-1];
+    }
+    mostFrequentFingerNumber=frequentNr;	//14å¸§å›¾åƒè¯†åˆ«å‡ºæ‰‹æŒ‡æ•°é‡é¢‘ç‡å‡ºç°æœ€é«˜çš„åˆ¤å®šä¸ºæœ€å¯èƒ½çš„æ‰‹æŒ‡æ•°é‡
 }
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºaddFingerNumberToVector
-* ¹¦ÄÜËµÃ÷£º½«Ã¿Ö¡µÄÊ¶±ğµ½µÄÖ¸¼âÊıÁ¿´æÈë£¬ÅĞ¶ÏÊÖÖ¸ÊıÁ¿µÄÏòÁ¿
-* ÊäÈë²ÎÊı£ºÎŞ
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šaddFingerNumberToVector
+ * åŠŸèƒ½è¯´æ˜ï¼šå°†æ¯å¸§çš„è¯†åˆ«åˆ°çš„æŒ‡å°–æ•°é‡å­˜å…¥ï¼Œåˆ¤æ–­æ‰‹æŒ‡æ•°é‡çš„å‘é‡
+ * è¾“å…¥å‚æ•°ï¼šæ— 
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::addFingerNumberToVector()
 {
-	int i=fingerTips.size();				//Ö¸¼âµÄÊıÁ¿
-	fingerNumbers.push_back(i);				//½«Ã¿Ö¡µÄÊ¶±ğµ½µÄÖ¸¼âÊıÁ¿´æÈë£¬ÅĞ¶ÏÊÖÖ¸ÊıÁ¿µÄÏòÁ¿
+    int i=fingerTips.size();				//æŒ‡å°–çš„æ•°é‡
+    fingerNumbers.push_back(i);				//å°†æ¯å¸§çš„è¯†åˆ«åˆ°çš„æŒ‡å°–æ•°é‡å­˜å…¥ï¼Œåˆ¤æ–­æ‰‹æŒ‡æ•°é‡çš„å‘é‡
 }
 
-// calculate most frequent numbers of fingers 
+// calculate most frequent numbers of fingers
 // over 20 frames
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºgetFingerNumber
-* ¹¦ÄÜËµÃ÷£º»ñÈ¡ÊÖÖ¸µÄÊıÁ¿
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šgetFingerNumber
+ * åŠŸèƒ½è¯´æ˜ï¼šè·å–æ‰‹æŒ‡çš„æ•°é‡
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰æ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::getFingerNumber(MyImage *m)
 {
-	removeRedundantFingerTips();                   //É¾³ıÊ¶±ğ³öÀ´±Ë´ËÌ«¿¿½üµÄÖ¸¼â
-	if(bRect.height > m->src.rows/2 && nrNoFinger>12 && isHand )
-	{
-		numberColor=Scalar(0,200,0);
-		addFingerNumberToVector();
-		if(frameNumber>12)							//Ê¶±ğ12+1Ö¡»°
-		{
-			nrNoFinger=0;
-			frameNumber=0;	
-			computeFingerNumber();					//¼ÆËãÊÖÖ¸ÊıÁ¿
-			numbers2Display.push_back(mostFrequentFingerNumber);
-			fingerNumbers.clear();
-		}
-		else
-		{
-			frameNumber++;
-		}
-	}
-	else
-	{
-		nrNoFinger++;
-		numberColor=Scalar(200,200,200);           //ÉèÖÃÏÔÊ¾Êı×ÖÊ¹ÓÃµÄÑÕÉ«
-	}
+    removeRedundantFingerTips();                   //åˆ é™¤è¯†åˆ«å‡ºæ¥å½¼æ­¤å¤ªé è¿‘çš„æŒ‡å°–
+    if(bRect.height > m->src.rows/2 && nrNoFinger>12 && isHand )
+    {
+        numberColor=Scalar(0,200,0);
+        addFingerNumberToVector();
+        if(frameNumber>12)							//è¯†åˆ«12+1å¸§è¯
+        {
+            nrNoFinger=0;
+            frameNumber=0;
+            computeFingerNumber();					//è®¡ç®—æ‰‹æŒ‡æ•°é‡
+            numbers2Display.push_back(mostFrequentFingerNumber);
+            fingerNumbers.clear();
+        }
+        else
+        {
+            frameNumber++;
+        }
+    }
+    else
+    {
+        nrNoFinger++;
+        numberColor=Scalar(200,200,200);           //è®¾ç½®æ˜¾ç¤ºæ•°å­—ä½¿ç”¨çš„é¢œè‰²
+    }
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºgetAngle
-* ¹¦ÄÜËµÃ÷£º»ñÈ¡½Ç¶È£¬Èı¸öµã£¬Ò»¸öÎª¶¥µã£¬¼ÆËãÕâ¸ö¶¥µãµÄ½Ç¶È£¬ÓÃµÄÊÇ½Ç¶ÈÖÆ
-* ÊäÈë²ÎÊı£ºs£¬f£¬e´ú±íÃèÊöÍ¹°üÈ±ÏİµÄµ¥¸ö×ø±ê£¬s->ÆğÊ¼×ø±ê£¬f->½Çµã×ø±ê£¬e->½áÊø×ø±ê
-* Êä³ö²ÎÊı£ºfloat ÀàĞÍµÄ½Ç¶È
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šgetAngle
+ * åŠŸèƒ½è¯´æ˜ï¼šè·å–è§’åº¦ï¼Œä¸‰ä¸ªç‚¹ï¼Œä¸€ä¸ªä¸ºé¡¶ç‚¹ï¼Œè®¡ç®—è¿™ä¸ªé¡¶ç‚¹çš„è§’åº¦ï¼Œç”¨çš„æ˜¯è§’åº¦åˆ¶
+ * è¾“å…¥å‚æ•°ï¼šsï¼Œfï¼Œeä»£è¡¨æè¿°å‡¸åŒ…ç¼ºé™·çš„å•ä¸ªåæ ‡ï¼Œs->èµ·å§‹åæ ‡ï¼Œf->è§’ç‚¹åæ ‡ï¼Œe->ç»“æŸåæ ‡
+ * è¾“å‡ºå‚æ•°ï¼šfloat ç±»å‹çš„è§’åº¦
+ ********************************************************************************************/
 float HandGesture::getAngle(Point s, Point f, Point e)
 {
-	float l1 = distanceP2P(f,s);
-	float l2 = distanceP2P(f,e);
-	float dot=(s.x-f.x)*(e.x-f.x) + (s.y-f.y)*(e.y-f.y);
-	float angle = acos(dot/(l1*l2));
-	angle=angle*180/M_PI;
-	return angle;
+    float l1 = distanceP2P(f,s);
+    float l2 = distanceP2P(f,e);
+    float dot=(s.x-f.x)*(e.x-f.x) + (s.y-f.y)*(e.y-f.y);
+    float angle = acos(dot/(l1*l2));
+    angle=angle*180/M_PI;
+    return angle;
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºeleminateDefects
-* ¹¦ÄÜËµÃ÷£ºÇå³ıÈ±Ïİ£¬Ê¹ÓÃÁË¶àÖÖÇå³ıÈ±ÏİµÄÌõ¼ş
-            1.Ö¸¼âµ½Ö¸·ìµÄ¾àÀë²»ÄÜĞ¡ÓÚÊÖ²¿ÂÖÀªµÄÍâ½Ó¾ØĞÎ¸ß¶ÈµÄ5·ÖÖ®Ò»
-			2.ÊÖÖ¸¼äµÄ¼Ğ½Ç²»ÄÜĞ¡ÓÚ99¶È
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šeleminateDefects
+ * åŠŸèƒ½è¯´æ˜ï¼šæ¸…é™¤ç¼ºé™·ï¼Œä½¿ç”¨äº†å¤šç§æ¸…é™¤ç¼ºé™·çš„æ¡ä»¶
+ 1.æŒ‡å°–åˆ°æŒ‡ç¼çš„è·ç¦»ä¸èƒ½å°äºæ‰‹éƒ¨è½®å»“çš„å¤–æ¥çŸ©å½¢é«˜åº¦çš„5åˆ†ä¹‹ä¸€
+ 2.æ‰‹æŒ‡é—´çš„å¤¹è§’ä¸èƒ½å°äº99åº¦
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::eleminateDefects(MyImage *m)
 {
-	int tolerance =  bRect_height/5;
-	float angleTol=99;             //Í¹°üÈ±Ïİµã£¬Ò²¾ÍÊÇÖ¸¼ä¼Ğ½Ç×î´óµÄÔÊĞíÎª99¶È
-	vector<Vec4i> newDefects;
-	int startidx, endidx, faridx;
-	vector<Vec4i>::iterator d=defects[cIdx].begin();
-	while( d!=defects[cIdx].end() ) 
-	{
+    int tolerance =  bRect_height/5;
+    float angleTol=99;             //å‡¸åŒ…ç¼ºé™·ç‚¹ï¼Œä¹Ÿå°±æ˜¯æŒ‡é—´å¤¹è§’æœ€å¤§çš„å…è®¸ä¸º99åº¦
+    vector<Vec4i> newDefects;
+    int startidx, endidx, faridx;
+    vector<Vec4i>::iterator d=defects[cIdx].begin();
+    while( d!=defects[cIdx].end() )
+    {
    	    Vec4i& v=(*d);
-	    startidx=v[0]; Point ptStart(contours[cIdx][startidx] );
-   		endidx=v[1]; Point ptEnd(contours[cIdx][endidx] );
-  	    faridx=v[2]; Point ptFar(contours[cIdx][faridx] );
-		if (distanceP2P(ptStart, ptFar) > tolerance && distanceP2P(ptEnd, ptFar) > tolerance && getAngle(ptStart, ptFar, ptEnd) < angleTol)
-		{
-			if (ptEnd.y > (bRect.y + bRect.height - bRect.height / 4))
-			{
-				circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
-			}
-			else if (ptStart.y > (bRect.y + bRect.height - bRect.height / 4))
-			{
-				circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
-			}
-			else
-			{
-				newDefects.push_back(v);
-			}
-		}
-		else
-		{
-			circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
-		}
-		d++;
-	}
-	nrOfDefects=newDefects.size();
-	defects[cIdx].swap(newDefects);
-	removeRedundantEndPoints(defects[cIdx], m);
+        startidx=v[0]; Point ptStart(contours[cIdx][startidx] );
+        endidx=v[1]; Point ptEnd(contours[cIdx][endidx] );
+        faridx=v[2]; Point ptFar(contours[cIdx][faridx] );
+        if (distanceP2P(ptStart, ptFar) > tolerance && distanceP2P(ptEnd, ptFar) > tolerance && getAngle(ptStart, ptFar, ptEnd) < angleTol)
+        {
+            if (ptEnd.y > (bRect.y + bRect.height - bRect.height / 4))
+            {
+                circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
+            }
+            else if (ptStart.y > (bRect.y + bRect.height - bRect.height / 4))
+            {
+                circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
+            }
+            else
+            {
+                newDefects.push_back(v);
+            }
+        }
+        else
+        {
+            circle(m->src, ptFar, 4, Scalar(0x26, 0x66, 0xEB), 4);
+        }
+        d++;
+    }
+    nrOfDefects=newDefects.size();
+    defects[cIdx].swap(newDefects);
+    removeRedundantEndPoints(defects[cIdx], m);
 }
 
 // remove endpoint of convexity defects if they are at the same fingertip
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºremoveRedundantEndPoints
-* ¹¦ÄÜËµÃ÷£ºÉ¾³ı¶ËµãµÄÍ¹ĞÔÈ±Ïİ£¬Èç¹ûËûÃÇÔÚÍ¬Ò»Ö¸¼â
-* ÊäÈë²ÎÊı£ºnewDefects->Í¹°üÈ±ÏİÏòÁ¿,m->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šremoveRedundantEndPoints
+ * åŠŸèƒ½è¯´æ˜ï¼šåˆ é™¤ç«¯ç‚¹çš„å‡¸æ€§ç¼ºé™·ï¼Œå¦‚æœä»–ä»¬åœ¨åŒä¸€æŒ‡å°–
+ * è¾“å…¥å‚æ•°ï¼šnewDefects->å‡¸åŒ…ç¼ºé™·å‘é‡,m->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::removeRedundantEndPoints(vector<Vec4i> newDefects,MyImage *m)
 {
-	Vec4i temp;
-	float avgX, avgY;
-	float tolerance=bRect_width/6;    //ÈİÈÌµÄ¹«²î£¬ÎªÊÖ²¿ÂÖÀªµÄÍâ½Ó¾ØĞÎµÄ¿íµÄÁù·ÖÖ®Ò»
-	int startidx, endidx, faridx;
-	int startidx2, endidx2;
-	for(int i=0;i<newDefects.size();i++)
-	{
-		for(int j=i;j<newDefects.size();j++)
-		{
-	    	startidx=newDefects[i][0]; Point ptStart(contours[cIdx][startidx] );
-	   		endidx=newDefects[i][1]; Point ptEnd(contours[cIdx][endidx] );
-	    	startidx2=newDefects[j][0]; Point ptStart2(contours[cIdx][startidx2] );
-	   		endidx2=newDefects[j][1]; Point ptEnd2(contours[cIdx][endidx2] );
-			if(distanceP2P(ptStart,ptEnd2) < tolerance )
-			{
-				contours[cIdx][startidx]=ptEnd2;
-				break;
-			}
-			if(distanceP2P(ptEnd,ptStart2) < tolerance )
-			{
-				contours[cIdx][startidx2]=ptEnd;
-			}
-		}
-	}
+    Vec4i temp;
+    float avgX, avgY;
+    float tolerance=bRect_width/6;    //å®¹å¿çš„å…¬å·®ï¼Œä¸ºæ‰‹éƒ¨è½®å»“çš„å¤–æ¥çŸ©å½¢çš„å®½çš„å…­åˆ†ä¹‹ä¸€
+    int startidx, endidx, faridx;
+    int startidx2, endidx2;
+    for(int i=0;i<newDefects.size();i++)
+    {
+        for(int j=i;j<newDefects.size();j++)
+        {
+            startidx=newDefects[i][0]; Point ptStart(contours[cIdx][startidx] );
+            endidx=newDefects[i][1]; Point ptEnd(contours[cIdx][endidx] );
+            startidx2=newDefects[j][0]; Point ptStart2(contours[cIdx][startidx2] );
+            endidx2=newDefects[j][1]; Point ptEnd2(contours[cIdx][endidx2] );
+            if(distanceP2P(ptStart,ptEnd2) < tolerance )
+            {
+                contours[cIdx][startidx]=ptEnd2;
+                break;
+            }
+            if(distanceP2P(ptEnd,ptStart2) < tolerance )
+            {
+                contours[cIdx][startidx2]=ptEnd;
+            }
+        }
+    }
 }
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºcheckForOneFinger
-* ¹¦ÄÜËµÃ÷£ºµ¥ÊÖÖ¸Ê±Ê¹ÓÃ´ÎÄ£Ê½Ê¶±ğÊÖÖ¸£¬Í¹°üÈ±Ïİ²»ÊÊºÏÓÃÓÚµ¥Ö¸¼ì²â£¬ËùÒÔÊ¹ÓÃÈçÏÂ²»Í¨¹ıÍ¹°üÈ±Ïİ·½Ê½À´Ê¶±ğµ¥Ö¸
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šcheckForOneFinger
+ * åŠŸèƒ½è¯´æ˜ï¼šå•æ‰‹æŒ‡æ—¶ä½¿ç”¨æ¬¡æ¨¡å¼è¯†åˆ«æ‰‹æŒ‡ï¼Œå‡¸åŒ…ç¼ºé™·ä¸é€‚åˆç”¨äºå•æŒ‡æ£€æµ‹ï¼Œæ‰€ä»¥ä½¿ç”¨å¦‚ä¸‹ä¸é€šè¿‡å‡¸åŒ…ç¼ºé™·æ–¹å¼æ¥è¯†åˆ«å•æŒ‡
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::checkForOneFinger(MyImage *m)
 {
-	int yTol=bRect.height/6;
-	Point highestP;
-	highestP.y=m->src.rows;
-	vector<Point>::iterator d=contours[cIdx].begin();
-	while( d!=contours[cIdx].end() ) 
-	{
+    int yTol=bRect.height/6;
+    Point highestP;
+    highestP.y=m->src.rows;
+    vector<Point>::iterator d=contours[cIdx].begin();
+    while( d!=contours[cIdx].end() )
+    {
    	    Point v=(*d);
-		if(v.y<highestP.y)
-		{
-			highestP=v;                 //²éÕÒ×î´óÂÖÀªÉÏy×îĞ¡µÄµã£¬Ò²ÊÇ×î¿¿½ü×ó±ßµÄµã
-			cout<<highestP.y<<endl;       
-		}
-		d++;	
-	}
-	int n=0;
-	d=hullP[cIdx].begin();				//ÏòÁ¿Ö¸ÏòÍ¹°üÉÏµÄµã¼¯
-	while( d!=hullP[cIdx].end() ) 
-	{
+        if(v.y<highestP.y)
+        {
+            highestP=v;                 //æŸ¥æ‰¾æœ€å¤§è½®å»“ä¸Šyæœ€å°çš„ç‚¹ï¼Œä¹Ÿæ˜¯æœ€é è¿‘å·¦è¾¹çš„ç‚¹
+            cout<<highestP.y<<endl;
+        }
+        d++;
+    }
+    int n=0;
+    d=hullP[cIdx].begin();				//å‘é‡æŒ‡å‘å‡¸åŒ…ä¸Šçš„ç‚¹é›†
+    while( d!=hullP[cIdx].end() )
+    {
    	    Point v=(*d);
-		cout<<"x " << v.x << " y "<<  v.y << " highestpY " << highestP.y<< "ytol "<<yTol<<endl;
-		if(v.y<highestP.y+yTol && v.y!=highestP.y && v.x!=highestP.x)
-		{
-			n++;
-		}
-		d++;	
-	}
-	if(n==0)
-	{
-		fingerTips.push_back(highestP);
-	}
+        cout<<"x " << v.x << " y "<<  v.y << " highestpY " << highestP.y<< "ytol "<<yTol<<endl;
+        if(v.y<highestP.y+yTol && v.y!=highestP.y && v.x!=highestP.x)
+        {
+            n++;
+        }
+        d++;
+    }
+    if(n==0)
+    {
+        fingerTips.push_back(highestP);
+    }
 }
 
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºcheckForOneFinger1
-* ¹¦ÄÜËµÃ÷£ºµ¥ÊÖÖ¸Ê±Ê¹ÓÃ´ÎÄ£Ê½Ê¶±ğÊÖÖ¸£¬ÊÖ²¿ÂÖÀªµÄ×î´óÄÚ½ÓÔ²µÄÔ²ĞÄµ½Ö¸¼âµÄ¾àÀë´óÓÚÄ³¸öÖµµÄÊ±ºòÅĞ¶ÏÎªÖ¸¼â
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šcheckForOneFinger1
+ * åŠŸèƒ½è¯´æ˜ï¼šå•æ‰‹æŒ‡æ—¶ä½¿ç”¨æ¬¡æ¨¡å¼è¯†åˆ«æ‰‹æŒ‡ï¼Œæ‰‹éƒ¨è½®å»“çš„æœ€å¤§å†…æ¥åœ†çš„åœ†å¿ƒåˆ°æŒ‡å°–çš„è·ç¦»å¤§äºæŸä¸ªå€¼çš„æ—¶å€™åˆ¤æ–­ä¸ºæŒ‡å°–
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::checkForOneFinger1(MyImage *m)
 {
-	//cv::Mat drawing(m->src.size(), CV_8UC3);
-	int yTol = bRect.height / 6;
-	Point highestP;
-
-	double dist, maxdist = -1;
-
-	cv::Point center;
-	for (int i = 0; i< m->src.cols; i++)   //ÂÖÀªµÄ×î´óÄÚÇĞÔ²
-	{
-		for (int j = 0; j< m->src.rows; j++)
-		{
-			dist = pointPolygonTest(contours[cIdx], cv::Point(i, j), true);
-			if (dist > maxdist)
-			{
-				maxdist = dist;
-				center = cv::Point(i, j);
-			}
-		}
-	}
-	circle(m->src, center, maxdist, cv::Scalar(220, 75, 20), 1, CV_AA);
-
-	vector<Point>::iterator d = contours[cIdx].begin();
-	double distance;
-	double t = 0;
-	while (d != contours[cIdx].end())
-	{
-		Point v = (*d);
-		distance = powf((v.x - center.x), 2) + powf((v.y - center.y), 2);
-		distance = sqrtf(distance);
-		if (distance > t)
-		{
-			t = distance;
-			highestP = v;                 //²éÕÒ×î´óÂÖÀªÉÏy×îĞ¡µÄµã£¬Ò²ÊÇ×î¿¿½ü×ó±ßµÄµã
-			cout << highestP.y << endl;
-		}
-		d++;
-	}
-	if (t > yTol)
-	{
-		fingerTips.push_back(highestP);
-	}
+    //cv::Mat drawing(m->src.size(), CV_8UC3);
+    int yTol = bRect.height / 6;
+    Point highestP;
+    
+    double dist, maxdist = -1;
+    
+    cv::Point center;
+    for (int i = 0; i< m->src.cols; i++)   //è½®å»“çš„æœ€å¤§å†…åˆ‡åœ†
+    {
+        for (int j = 0; j< m->src.rows; j++)
+        {
+            dist = pointPolygonTest(contours[cIdx], cv::Point(i, j), true);
+            if (dist > maxdist)
+            {
+                maxdist = dist;
+                center = cv::Point(i, j);
+            }
+        }
+    }
+    circle(m->src, center, maxdist, cv::Scalar(220, 75, 20), 1, CV_AA);
+    
+    vector<Point>::iterator d = contours[cIdx].begin();
+    double distance;
+    double t = 0;
+    while (d != contours[cIdx].end())
+    {
+        Point v = (*d);
+        distance = powf((v.x - center.x), 2) + powf((v.y - center.y), 2);
+        distance = sqrtf(distance);
+        if (distance > t)
+        {
+            t = distance;
+            highestP = v;                 //æŸ¥æ‰¾æœ€å¤§è½®å»“ä¸Šyæœ€å°çš„ç‚¹ï¼Œä¹Ÿæ˜¯æœ€é è¿‘å·¦è¾¹çš„ç‚¹
+            cout << highestP.y << endl;
+        }
+        d++;
+    }
+    if (t > yTol)
+    {
+        fingerTips.push_back(highestP);
+    }
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºdrawFingerTips
-* ¹¦ÄÜËµÃ÷£º»­³öÖ¸¼â×ø±ê
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šdrawFingerTips
+ * åŠŸèƒ½è¯´æ˜ï¼šç”»å‡ºæŒ‡å°–åæ ‡
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::drawFingerTips(MyImage *m)
 {
-	Point p;
-	int k=0;
-	for(int i=0;i<fingerTips.size();i++)
-	{
-		p=fingerTips[i];
-		putText(m->src,intToString(i),p-Point(0,30),fontFace, 1.2f,Scalar(200,200,200),2);
-		//»æÖÆÖ¸¼â×ø±ê
-   		circle( m->src,p,   5, Scalar(100,255,100), 1 );
-		line(m->src, p, p-Point(0, 25), Scalar(0, 255, 0), 1);
-		line(m->src, p, p+Point(0, 25), Scalar(0, 255, 0), 1);
-		line(m->src, p, p-Point(25, 0), Scalar(0, 255, 0), 1);
-		line(m->src, p, p+Point(25, 0), Scalar(0, 255, 0), 1);
-   	 }
+    Point p;
+    int k=0;
+    for(int i=0;i<fingerTips.size();i++)
+    {
+        p=fingerTips[i];
+        putText(m->src,intToString(i),p-Point(0,30),fontFace, 1.2f,Scalar(200,200,200),2);
+        //ç»˜åˆ¶æŒ‡å°–åæ ‡
+        circle( m->src,p,   5, Scalar(100,255,100), 1 );
+        line(m->src, p, p-Point(0, 25), Scalar(0, 255, 0), 1);
+        line(m->src, p, p+Point(0, 25), Scalar(0, 255, 0), 1);
+        line(m->src, p, p-Point(25, 0), Scalar(0, 255, 0), 1);
+        line(m->src, p, p+Point(25, 0), Scalar(0, 255, 0), 1);
+    }
 }
 /*******************************************************************************************
-* º¯ÊıÃû³Æ£ºgetFingerTips
-* ¹¦ÄÜËµÃ÷£º»ñÈ¡Ö¸¼â
-* ÊäÈë²ÎÊı£ºm->×Ô¶¨ÒåÍ¼ÏñÊı¾İ½á¹¹Ìå
-* Êä³ö²ÎÊı£ºÎŞ
-********************************************************************************************/
+ * å‡½æ•°åç§°ï¼šgetFingerTips
+ * åŠŸèƒ½è¯´æ˜ï¼šè·å–æŒ‡å°–
+ * è¾“å…¥å‚æ•°ï¼šm->è‡ªå®šä¹‰å›¾åƒæ•°æ®ç»“æ„ä½“
+ * è¾“å‡ºå‚æ•°ï¼šæ— 
+ ********************************************************************************************/
 void HandGesture::getFingerTips(MyImage *m)
 {
-	int i=0;
-	fingerTips.clear();								//Çå³ıÖ¸¼â×ø±ê	
-	vector<Vec4i>::iterator d=defects[cIdx].begin();//Ö¸·ìÏòÁ¿
-	while( d!=defects[cIdx].end() ) 
-	{
+    int i=0;
+    fingerTips.clear();								//æ¸…é™¤æŒ‡å°–åæ ‡
+    vector<Vec4i>::iterator d=defects[cIdx].begin();//æŒ‡ç¼å‘é‡
+    while( d!=defects[cIdx].end() )
+    {
    	    Vec4i& v=(*d);
-	    int startidx=v[0]; Point ptStart(contours[cIdx][startidx] );
-   		int endidx=v[1]; Point ptEnd(contours[cIdx][endidx] );
-  	    int faridx=v[2]; Point ptFar(contours[cIdx][faridx] );
-		if(i==0)
-		{
-			fingerTips.push_back(ptStart);
-			i++;
-		}
-		fingerTips.push_back(ptEnd);
-		d++;
-		i++;
+        int startidx=v[0]; Point ptStart(contours[cIdx][startidx] );
+        int endidx=v[1]; Point ptEnd(contours[cIdx][endidx] );
+        int faridx=v[2]; Point ptFar(contours[cIdx][faridx] );
+        if(i==0)
+        {
+            fingerTips.push_back(ptStart);
+            i++;
+        }
+        fingerTips.push_back(ptEnd);
+        d++;
+        i++;
    	}
-	if(fingerTips.size()==0)						//Í¨¹ıÒÔÉÏ¹ı³ÌÃ»ÓĞÕÒµ½Ö¸¼âµÄÇé¿öÏÂ£¨ÒòÎªÖ»ÓĞÁ½¸öÖ¸¼âµÄÊ±ºò²ÅÓĞÖ¸·ì£©
-	{
-		checkForOneFinger(m);						//µ¥ÊÖÖ¸¼ì²âÄ£Ê½
-		//checkForOneFinger1(m);
-	}
+    if(fingerTips.size()==0)						//é€šè¿‡ä»¥ä¸Šè¿‡ç¨‹æ²¡æœ‰æ‰¾åˆ°æŒ‡å°–çš„æƒ…å†µä¸‹ï¼ˆå› ä¸ºåªæœ‰ä¸¤ä¸ªæŒ‡å°–çš„æ—¶å€™æ‰æœ‰æŒ‡ç¼ï¼‰
+    {
+        checkForOneFinger(m);						//å•æ‰‹æŒ‡æ£€æµ‹æ¨¡å¼
+        //checkForOneFinger1(m);
+    }
 }
 /*
-void GetContourCenter(InputArray contour, Point2f &pt)
-{
-	//ÖØĞÄ·¨×¥ÖĞĞÄµã
+ void GetContourCenter(InputArray contour, Point2f &pt)
+ {
+	//é‡å¿ƒæ³•æŠ“ä¸­å¿ƒç‚¹
 	int contourlength = contour.size;
 	CvPoint *pt = 0;
 	double avg_px = 0, avg_py = 0;
 	for (int i = 0; i < contourlength; i++)
 	{
-		pt = CV_GET_SEQ_ELEM(CvPoint, contour, i);
-		avg_px += pt->x;
-		avg_py += pt->y;
+ pt = CV_GET_SEQ_ELEM(CvPoint, contour, i);
+ avg_px += pt->x;
+ avg_py += pt->y;
 	}
 	p.x = avg_px / contourlength;
 	p.y = avg_py / contourlength;
-}*/
+ }*/
