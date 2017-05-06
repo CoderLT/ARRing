@@ -69,9 +69,6 @@
     [gestureRecognizers addObjectsFromArray:scnView.gestureRecognizers];
     scnView.gestureRecognizers = gestureRecognizers;
 }
-- (IBAction)didClickBtn:(id)sender {
-    [self.navigationController pushViewController:[ViewController new] animated:YES];
-}
 
 - (void) handleTap:(UIGestureRecognizer*)gestureRecognize
 {

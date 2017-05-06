@@ -37,8 +37,9 @@
 #define setDefectError(d) d[3] = -1
 #define isDefectError(d) (d[3] < 0)
 
-Point2f ringPos1 = Point2f(0, 0), ringPos2 = Point2f(0, 0);
+ATHand hand;
 bool showDebugMsg = false;
+Vec6i params = {0,0,0,0,0,0};
 /*******************************************************************************************
 * 函数名称：findBiggestContour
 * 功能说明：查找最大的轮廓
@@ -49,10 +50,8 @@ int findBiggestContour(vector<vector<Point> > contours)
 {
     int indexOfBiggestContour = -1;
     int sizeOfBiggestContour = 0;
-    for (int i = 0; i < contours.size(); i++)
-    {
-        if(contours[i].size() > sizeOfBiggestContour)	//判断轮廓面积
-        {
+    for (int i = 0; i < contours.size(); i++) {
+        if(contours[i].size() > sizeOfBiggestContour) { //判断轮廓面积
             sizeOfBiggestContour = (int)contours[i].size();
             indexOfBiggestContour = i;
         }
@@ -72,7 +71,22 @@ string intToString(int number)
     string str = ss.str();
     return str;
 }
-
+// 计算两点的距离
+float distanceP2P(Point2f a, Point2f b)
+{
+    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
+}
+/*******************************************************************************************
+ * 函数名称：getAngle
+ * 功能说明：获取角度，三个点，一个为顶点，计算这个顶点的角度，用的是角度制
+ * 输入参数：s，f，e代表描述凸包缺陷的单个坐标，s->起始坐标，f->角点坐标，e->结束坐标
+ * 输出参数：float 类型的角度
+ ********************************************************************************************/
+float getAngle(Point s, Point f, Point e)
+{
+    float dot = (s.x - f.x) * (e.x - f.x) + (s.y - f.y) * (e.y - f.y);
+    return acos(dot / (distanceP2P(f, s) * distanceP2P(f, e))) * 180 / M_PI;
+}
 Point minDistance(Point a, vector<Point> contours, Range range = Range::all()) {
     if (contours.size() < 1) {
         return Point(0, 0);
@@ -173,17 +187,52 @@ Point2f lineCrossPoint(Point a, Point b, Vec4f line) {
     return Point2f((b1 * c2 - c1 * b2) / (a1 * b2 - a2 * b1),
                    (a2 * c1 - a1 * c2) / (a1 * b2 - a2 * b1));
 }
+Point2f pointToLine(Point p, Vec4f line) {
+    // x2 = y1, y2 = -x1
+    // line[1] * x + (-line[0]) * y + line[3] * line[0] - line[2] * line[1] = 0
+    float a1 = -line[0], b1 = -line[1], c1 = p.x * line[0] + p.y * line[1];
+    float a2 = line[1], b2 = -line[0], c2 = line[3] * line[0] - line[2] * line[1];
+    
+    //    x = (b1 * c2 - c1 * b2) / (a1 * b2 - a2 * b1)
+    //    y = (a2 * c1 - a1 * c2) / (a1 * b2 - a2 * b1)
+    return Point2f((b1 * c2 - c1 * b2) / (a1 * b2 - a2 * b1),
+                   (a2 * c1 - a1 * c2) / (a1 * b2 - a2 * b1));
+}
 
 void myDrawContours(MyImage *m,HandGesture *hg)
 {
+    Mat src = m->src;
+    vector<Point> contours = hg->contours[hg->cIdx];
+    vector<Vec4i>& defects = hg->defects[hg->cIdx];
+    
     if (showDebugMsg) {
         drawContours(m->src, hg->contours, hg->cIdx, ColorBlue, 2, 1); // 绘制轮廓线
     }
     
-    Mat src = m->src;
-    vector<Point> contours = hg->contours[hg->cIdx];
-    vector<Vec4i> defects = hg->defects[hg->cIdx];
+    for (int defectIdx = 0; defectIdx < defects.size(); defectIdx++) {
+        Vec4i& v = defects.at(defectIdx);
+        Point ptStart(contours[v[0]]);
+        Point ptEnd(contours[v[1]]);
+        Point ptFar(contours[v[2]]);
+        float angle = getAngle(ptStart, ptFar, ptEnd);
+        
+        if (angle > 50) {
+            setDefectError(v);
+        }
+        else {
+            v[3] = angle;
+        }
+    }
     
+    if (defects.size() > 1) {
+        while (!isDefectError(defects.back())) {
+            defects.insert(defects.begin(), defects.back());
+            defects.pop_back();
+        }
+    }
+    
+    float d0 = 0;
+    int fingerIndex = 0;
     for (int defectIdx = 0; defectIdx < defects.size(); defectIdx++) {
         Vec4i& v = defects.at(defectIdx);
         Vec4i preV = defects.at(defectIdx >= 1 ? defectIdx - 1 : defects.size() - 1);
@@ -198,17 +247,6 @@ void myDrawContours(MyImage *m,HandGesture *hg)
             else {
                 circle(src, ptFar, 2, ColorMagenta, 2);
             }
-            
-            //        putText(src, intToString(defectIdx), ptStart - Point(0,30), 0, 1.2f, Scalar(200,200,200), 2);
-            //        circle(src, ptStart, 2, RGB(255, 255, 0), 2);
-            //        circle(src, ptEnd, 2, RGB(255, 255, 0), 2);
-            //
-            //        Point center = (ptFar + contours[preV[2]]) * 0.5;
-            //        Point ringCenter = center + (ptStart - center) * 0.1;
-            //
-            //        line(src, contours[preV[2]], ptFar, RGB(0, 0, 255), 1);
-            //        line(src, ptStart, center, RGB(0, 0, 255), 1);
-            //        circle(src, ringCenter, 2, RGB(0, 0, 255), 2);
         }
         
         if (isDefectError(v) && isDefectError(preV)) {
@@ -219,9 +257,12 @@ void myDrawContours(MyImage *m,HandGesture *hg)
         Range range2 = preV[2] < preV[1] ? Range(preV[2], preV[1]) : Range(preV[2], (int)contours.size());
         
         vector<Point> points;
-        for (int i = 1; i < range1.end - range1.start && i < range2.end - range2.start; i++) {
-            Point a = contours[range1.start + i];
-            Point b = contours[range2.end - i];
+        for (int i = 1;
+             (isDefectError(v) || (i < range1.end - range1.start))
+             && (isDefectError(preV) || i < range2.end - range2.start);
+             i++) {
+            Point a = contours[(range1.start + i)%contours.size()];
+            Point b = contours[(range2.end - i)%contours.size()];
             points.push_back((a + b) * 0.5);
         }
         
@@ -231,62 +272,91 @@ void myDrawContours(MyImage *m,HandGesture *hg)
             
             //画一个线段
             Point2f crossP = crossPoint(lineV, contours, v[0]);
-            Point2f lineCross = lineCrossPoint(contours[v[2]], contours[preV[2]], lineV);
+            lineV[2] = crossP.x;
+            lineV[3] = crossP.y;
+            
+            //            Point2f lineCross = lineCrossPoint(contours[v[2]], contours[preV[2]], lineV);
+            Point2f point2Line1 = pointToLine(contours[preV[2]], lineV);
+            Point2f point2Line2 = pointToLine(contours[v[2]], lineV);
+            float d1 = distanceP2P(point2Line1, crossP);
+            float d2 = distanceP2P(point2Line2, crossP);
+            
+            if (fingerIndex >= 1 || v[3] < 45) {
+                fingerIndex++;
+            }
+            
+            if (fingerIndex == 1) {
+                d1 = d1 * 0.667;
+            }
+            else if (fingerIndex == 2) {
+                d1 = d0 * 220 / 200 > d1 ? d0 * 220 / 200 : d1;
+            }
+            else if (fingerIndex == 3) {
+                d1 = d0 > d1 ? d0 : d1;
+            }
+            else if (fingerIndex == 4) {
+                d1 = d0 * 180 / 200 > d1 ? d0 * 180 / 200 : d1;
+            }
+            float d = d2 > d1 ? d2 : d1;
+            if (fingerIndex == 1) {
+                d0 = d;
+            }
+            
+            float angle = atan2(lineV[1], lineV[0]);
+            Point2f offset = Point2f(d * cos(angle), d * sin(angle));
+            if (fabs(offset.x) > fabs(offset.y)) {
+                if ((point2Line1.x - crossP.x) * offset.x < 0) {
+                    offset = -offset;
+                }
+            }
+            else {
+                if ((point2Line1.y - crossP.y) * offset.y < 0) {
+                    offset = -offset;
+                }
+            }
+            
+            if (offset.x > 0 && offset.y < 0) {
+                continue;
+            }
+//            if (fingerIndex == 2) {
+//                printf("%.1f, %.1f, %.1f \n", angle * 180 / M_PI, offset.x, offset.y);
+//            }
+            
+            Point2f lineCross = crossP + offset;
+            Point2f ringP = lineCross + (crossP - lineCross) * 0.1f;
+            Vec4f lineH = Vec4f(lineCross.x - ringP.x, lineCross.y - ringP.y, ringP.x, ringP.y);
+            
+            ATFinger finger;
+            finger.index = fingerIndex;
+            finger.top = crossP;
+            finger.bottom = lineCross;
+            finger.ringLine = lineH;
+            finger.size = Size(d * 55 / 220, d);
+            finger.lastDefect = point2Line2;
+            finger.nextDefect = point2Line1;
+            hand.figers.push_back(finger);
+            
+            
             if (showDebugMsg) {
                 circle(src, crossP, 2, ColorRed, 2);
+//                circle(src, point2Line, 2, ColorBlue, 2);
                 circle(src, lineCross, 2, ColorBlue, 2);
-                cv::line(src, crossP + (lineCross - crossP) * 2, crossP, ColorGreen, 1);
-                putText(src, intToString(defectIdx), crossP - Point2f(0, 8), 0, 0.8f, ColorGreen, 2);
-            }
-            
-            Point2f ringP = lineCross + (crossP - lineCross) * 0.1f;
-            Vec4f lineH = Vec4f(-lineV[1], lineV[0], ringP.x, ringP.y);
-            Point2f pos1 = crossPoint2(lineH, contours, range1);
-            Point2f pos2 = crossPoint2(lineH, contours, range2);
-            if (showDebugMsg) {
-//                cv::line(src, pos1, pos2, ColorGold, 4);
-            }
-            
-            if (defectIdx == 2) {
-                ringPos1 = pos1;
-                ringPos2 = pos2;
+//                cv::line(src, contours[v[2]], point2Line, ColorGreen, 1);
+//                cv::line(src, contours[preV[2]], point2Line2, ColorGreen, 1);
+                if (fingerIndex == 2) {
+                    cv::line(src, crossP + (lineCross - crossP) * 2, crossP, ColorGreen, 1);
+                }
+                putText(src, intToString(fingerIndex), crossP - Point2f(0, 8), 0, 0.8f, ColorGreen, 2);
+//                putText(src, intToString(((int)distanceP2P(point2Line, crossP))), point2Line - Point2f(0, 8), 0, 0.4f, ColorGreen, 2);
+                putText(src, intToString(((int)distanceP2P(lineCross, crossP))), lineCross - Point2f(0, 8), 0, 0.4f, ColorGreen, 2);
+//                putText(src, intToString(v[3]), ptFar - Point(0, 8), 0, 0.4f, ColorGreen, 2);
             }
         }
     }
-}
-
-// 计算两点的距离
-float distanceP2P(Point2f a, Point2f b)
-{
-    return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2));
-}
-
-/*******************************************************************************************
- * 函数名称：getAngle
- * 功能说明：获取角度，三个点，一个为顶点，计算这个顶点的角度，用的是角度制
- * 输入参数：s，f，e代表描述凸包缺陷的单个坐标，s->起始坐标，f->角点坐标，e->结束坐标
- * 输出参数：float 类型的角度
- ********************************************************************************************/
-float getAngle(Point s, Point f, Point e)
-{
-    float dot = (s.x - f.x) * (e.x - f.x) + (s.y - f.y) * (e.y - f.y);
-    return acos(dot / (distanceP2P(f, s) * distanceP2P(f, e))) * 180 / M_PI;
-}
-
-void defectsFilter(HandGesture *hg) {
-    vector<Point> contours = hg->contours[hg->cIdx];
-    vector<Vec4i>& defects = hg->defects[hg->cIdx];
     
-    for (int defectIdx = (int)defects.size() - 1; defectIdx >= 0; defectIdx--) {
-        Vec4i& v = defects.at(defectIdx);
-        Point ptStart(contours[v[0]]);
-        Point ptEnd(contours[v[1]]);
-        Point ptFar(contours[v[2]]);
-        if (getAngle(ptStart, ptFar, ptEnd) > 90) {
-            setDefectError(v);
-        }
-    }
 }
+
+
 
 /*******************************************************************************************
  * 函数名称：makeContours
@@ -303,13 +373,17 @@ void makeContours(MyImage *m, HandGesture* hg)
     findContours(aBw,hg->contours,CV_RETR_EXTERNAL,CV_CHAIN_APPROX_NONE);//外部轮廓，存储轮廓上所有的点
     hg->initVectors();
     hg->cIdx=findBiggestContour(hg->contours);							 //查找最大的轮廓
-    if(hg->cIdx!=-1)
-    {
+    if(hg->cIdx!=-1) {
         hg->bRect=boundingRect(Mat(hg->contours[hg->cIdx]));									//计算点集的最外面矩形边界
         convexHull(Mat(hg->contours[hg->cIdx]),hg->hullP[hg->cIdx],false,true);					//逆时针查找凸包
         convexHull(Mat(hg->contours[hg->cIdx]),hg->hullI[hg->cIdx],false,false);
-        approxPolyDP( Mat(hg->hullP[hg->cIdx]), hg->hullP[hg->cIdx], 8, true );
         
+//        for (int i = 0; i < hg->hullP[hg->cIdx].size(); i++) {
+//            circle(m->src, hg->hullP[hg->cIdx].at(i), 3, ColorPlink, 2);
+//        }
+        
+        approxPolyDP( Mat(hg->hullP[hg->cIdx]), hg->hullP[hg->cIdx], 15, true );
+
         vector<int> newHullI;
         for (size_t i = 0; i < hg->hullI[hg->cIdx].size(); i++) {
             for (size_t j = 0; j < hg->hullP[hg->cIdx].size(); j++) {
@@ -322,19 +396,9 @@ void makeContours(MyImage *m, HandGesture* hg)
             }
         }
         hg->hullI[hg->cIdx] = newHullI;
-        if (hg->hullI[hg->cIdx].size()>3 ) {
+        if (hg->hullI[hg->cIdx].size() >= 3 ) {
             convexityDefects(hg->contours[hg->cIdx],hg->hullI[hg->cIdx],hg->defects[hg->cIdx]);	//计算凸包缺陷
-            //hg->eleminateDefects(m);															//清除缺陷
-            defectsFilter(hg);
         }
-//        hg->getFingerNumber(m);
-//        bool isHand = hg->detectIfHand();														//检测是否有手
-//        hg->printGestureInfo(m->src);															//在原图中显示识别出来的信息
-//        if(isHand) {
-//            hg->getFingerTips(m);																//获取指尖
-//            hg->drawFingerTips(m);																//绘制指尖
-//        }
-        
         myDrawContours(m, hg);
     }
 }
@@ -394,19 +458,29 @@ void SkinRGB(MyImage *m)
         }
     }
     
+    
     medianBlur(m->bw, m->bw, 9);
+    
+    // 形态学操作，去除噪声，并使手的边界更加清晰
+    Mat element = getStructuringElement(MORPH_RECT, Size(3,3));
+    erode(m->bw, m->bw, element);
+    morphologyEx(m->bw, m->bw, MORPH_OPEN, element);
+    dilate(m->bw, m->bw, element);
+    morphologyEx(m->bw, m->bw, MORPH_CLOSE, element);
 }
 
-void gestureRecognizer(cv::Mat& image, bool debug) {
+void gestureRecognizer(cv::Mat& image, cv::Vec6i params) {
     MyImage m;
     HandGesture hg;
     m.src = image;
     
-    showDebugMsg = debug;
+    showDebugMsg = params[0];
     
     pyrDown(m.src, m.srcLR);
     cvtColor(m.srcLR, m.srcLR, CV_BGRA2BGR);
     SkinRGB(&m);
+    
+    hand.figers.clear();
     makeContours(&m, &hg);
     
     if (showDebugMsg) {
