@@ -1,0 +1,96 @@
+PODS:
+  - ADTransitionController (1.1.1)
+  - AFNetworking (3.1.0):
+    - AFNetworking/NSURLSession (= 3.1.0)
+    - AFNetworking/Reachability (= 3.1.0)
+    - AFNetworking/Security (= 3.1.0)
+    - AFNetworking/Serialization (= 3.1.0)
+    - AFNetworking/UIKit (= 3.1.0)
+  - AFNetworking/NSURLSession (3.1.0):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.1.0)
+  - AFNetworking/Security (3.1.0)
+  - AFNetworking/Serialization (3.1.0)
+  - AFNetworking/UIKit (3.1.0):
+    - AFNetworking/NSURLSession
+  - Aspects (1.4.1)
+  - ATNavigationController (0.0.14)
+  - CTAssetsPickerController (3.3.1):
+    - PureLayout (~> 3.0.0)
+  - FMDB (2.6.2):
+    - FMDB/standard (= 2.6.2)
+  - FMDB/standard (2.6.2)
+  - INTULocationManager (4.2.0)
+  - KVOController (1.2.0)
+  - Masonry (1.0.2)
+  - MBProgressHUD (1.0.0)
+  - MJExtension (3.0.13)
+  - MJRefresh (3.1.12)
+  - MMPopupView (1.7.2):
+    - Masonry
+  - PureLayout (3.0.2)
+  - SDWebImage (4.0.0):
+    - SDWebImage/Core (= 4.0.0)
+  - SDWebImage/Core (4.0.0)
+  - UMengAnalytics (4.2.4)
+  - WebViewJavascriptBridge (6.0.2)
+  - YTKKeyValueStore (0.1.2):
+    - FMDB (~> 2.0)
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
+
+DEPENDENCIES:
+  - ADTransitionController
+  - AFNetworking
+  - Aspects
+  - ATNavigationController
+  - CTAssetsPickerController
+  - INTULocationManager
+  - KVOController
+  - Masonry
+  - MBProgressHUD (from `https://github.com/CoderLT/MBProgressHUD.git`)
+  - MJExtension
+  - MJRefresh
+  - MMPopupView
+  - SDWebImage
+  - UMengAnalytics
+  - WebViewJavascriptBridge
+  - YTKKeyValueStore
+  - YYKit
+
+EXTERNAL SOURCES:
+  MBProgressHUD:
+    :git: https://github.com/CoderLT/MBProgressHUD.git
+
+CHECKOUT OPTIONS:
+  MBProgressHUD:
+    :commit: 93ed629c62c8ed4358a3458792177df06a87ad5f
+    :git: https://github.com/CoderLT/MBProgressHUD.git
+
+SPEC CHECKSUMS:
+  ADTransitionController: 72299d31488bcbe59fb87c483a89a637ebc819f8
+  AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  Aspects: 7595ba96a6727a58ebcbfc954497fc5d2fdde546
+  ATNavigationController: d169e47720d4eb3fdb03b80c51a2c77eeaf9c6a5
+  CTAssetsPickerController: b1d1d50ab87cf6b8b13531de5f4530482e7e53ed
+  FMDB: 854a0341b4726e53276f2a8996f06f1b80f9259a
+  INTULocationManager: 73f8254b3d05c897c56bb13c190e5b7c648c0998
+  KVOController: d72ace34afea42468329623b3379ab3cd1d286b6
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
+  MBProgressHUD: 4890f671c94e8a0f3cf959aa731e9de2f036d71a
+  MJExtension: 5932755f451458eefa24239358817f8d291240c7
+  MJRefresh: b96cdb21c4aa75a7b07654311ab2f315c497e806
+  MMPopupView: fe1dd010824029dfb632fdf1a531db5dd5386020
+  PureLayout: 4d550abe49a94f24c2808b9b95db9131685fe4cd
+  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  UMengAnalytics: ef8d45f94c0e5771dc364cf6a5731d9d3b101da2
+  WebViewJavascriptBridge: 791ee0e26d1bf15efe5fb7fb9666a71a19b89d77
+  YTKKeyValueStore: 4d002941540dd5108fa23009b71e0f2f937f7a0f
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
+
+PODFILE CHECKSUM: 13a0dcc160d1e6ba2a7a22d9cf159a62537c438a
+
+COCOAPODS: 1.2.1
