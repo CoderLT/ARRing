@@ -121,7 +121,7 @@ Point crossPoint(Vec4f line, vector<Point> contours, int pos) {
     
     int distanceMin = INT_MAX;
     Point resurt = contours[0];
-    int offset = 20, index = 0;
+    int offset = 150, index = 0;
     for (int i = pos - offset; i < pos + offset; i++) {
         index = i;
         if (index < 0) {
@@ -208,6 +208,132 @@ void myDrawContours(MyImage *m,HandGesture *hg)
     if (showDebugMsg) {
         drawContours(m->src, hg->contours, hg->cIdx, ColorBlue, 2, 1); // 绘制轮廓线
     }
+    
+    if ((hg->bRect.size().width + 10 >= src.cols && hg->bRect.size().height * 1.4 >= src.rows)
+        || (hg->bRect.size().width * 1.4 >= src.cols && hg->bRect.size().height + 10 >= src.rows)) {
+        vector<int> hullIs = hg->hullI[hg->cIdx];
+        float minD = MAXFLOAT;
+        int index = -1;
+        for (int i = 0; i < hullIs.size(); i++) {
+            Point p = contours[hullIs[i]];
+            float d = src.cols - p.x + p.y;
+            circle(src, p, 4, ColorGold, 2);
+            if (d < minD) {
+                minD = d;
+                index = hullIs[i];
+            }
+        }
+        if (index >= 0) {
+            for (int defectIdx = 0; defectIdx < defects.size(); defectIdx++) {
+                Vec4i& v = defects.at(defectIdx);
+                Point ptStart(contours[v[0]]);
+                Point ptEnd(contours[v[1]]);
+                Point ptFar(contours[v[2]]);
+                if (v[0] != index) {
+                    if (showDebugMsg) {
+                        circle(m->src, ptFar, 3, ColorBlack, 2);
+                    }
+                    continue;
+                }
+                if (showDebugMsg) {
+                    circle(src, ptFar, 2, ColorMagenta, 2);
+                }
+                
+                Vec4i preV = defects.at(defectIdx >= 1 ? defectIdx - 1 : defects.size() - 1);
+                
+                Range range1 = v[0] < v[2] ? Range(v[0], v[2]) : Range(0, v[2]);
+                Range range2 = preV[2] < preV[1] ? Range(preV[2], preV[1]) : Range(preV[2], (int)contours.size());
+                
+                vector<Point> points;
+                for (int i = 1;
+                     ((i < range1.end - range1.start))
+                     && (i < range2.end - range2.start);
+                     i++) {
+                    Point a = contours[(range1.start + i)%contours.size()];
+                    Point b = contours[(range2.end - i)%contours.size()];
+                    if (a.x + 2 >= src.cols || b.x + 2 >= src.cols
+                        || a.y <= 2 || b.y <= 2) {
+                        continue;
+                    }
+                    points.push_back((a + b) * 0.5);
+                }
+                
+                if (showDebugMsg) {
+                    for (int i = 0; i < points.size(); i++) {
+                        circle(src, points[i], 2, ColorRed, 2);
+                    }
+                }
+                
+                if (points.size() > 5) {
+                    Vec4f lineV;
+                    fitLine(points, lineV, CV_DIST_L2, 0, 0.01, 0.01);
+                    
+                    //画一个线段
+                    Point2f crossP = crossPoint(lineV, contours, v[0]);
+                    lineV[2] = crossP.x;
+                    lineV[3] = crossP.y;
+                    
+                    //            Point2f lineCross = lineCrossPoint(contours[v[2]], contours[preV[2]], lineV);
+                    Point2f point2Line1 = pointToLine(contours[preV[2]], lineV);
+                    Point2f point2Line2 = pointToLine(contours[v[2]], lineV);
+                    float d1 = distanceP2P(point2Line1, crossP);
+                    float d2 = distanceP2P(point2Line2, crossP);
+                    float d = d2 > d1 ? d1 : d2;
+                    
+                    float angle = atan2(lineV[1], lineV[0]);
+                    Point2f offset = Point2f(d * cos(angle), d * sin(angle));
+                    if (fabs(offset.x) > fabs(offset.y)) {
+                        if ((point2Line1.x - crossP.x) * offset.x < 0) {
+                            offset = -offset;
+                        }
+                    }
+                    else {
+                        if ((point2Line1.y - crossP.y) * offset.y < 0) {
+                            offset = -offset;
+                        }
+                    }
+                    if (offset.x > 0 && offset.y < 0) {
+                        continue;
+                    }
+                    
+                    Point2f lineCross = crossP + offset;
+                    Point2f ringP = lineCross + (crossP - lineCross) * 0.1f;
+                    Vec4f lineH = Vec4f(lineCross.x - ringP.x, lineCross.y - ringP.y, ringP.x, ringP.y);
+                    Vec4f lineH2 = Vec4f(-lineCross.y + ringP.y, lineCross.x - ringP.x, ringP.x, ringP.y);
+                    
+                    Point2f pos1 = crossPoint2(lineH2, contours, range1);
+                    Point2f pos2 = crossPoint2(lineH2, contours, range2);
+                    
+                    ATFinger finger;
+                    finger.index = 2;
+                    finger.top = crossP;
+                    finger.bottom = lineCross;
+                    finger.ringLine = lineH;
+                    finger.size = Size(distanceP2P(pos1, pos2), d);
+                    finger.lastDefect = point2Line2;
+                    finger.nextDefect = point2Line1;
+                    hand.figers.push_back(finger);
+                    
+                    if (showDebugMsg) {
+                        circle(src, crossP, 2, ColorRed, 2);
+                        //                circle(src, point2Line, 2, ColorBlue, 2);
+                        circle(src, lineCross, 2, ColorBlue, 2);
+                        //                cv::line(src, contours[v[2]], point2Line, ColorGreen, 1);
+                        //                cv::line(src, contours[preV[2]], point2Line2, ColorGreen, 1);
+                        if (finger.index == 2) {
+                            cv::line(src, crossP + (lineCross - crossP) * 2, crossP, ColorGreen, 1);
+                        }
+                        putText(src, intToString(finger.index), crossP - Point2f(0, 8), 0, 0.8f, ColorGreen, 2);
+                        //                putText(src, intToString(((int)distanceP2P(point2Line, crossP))), point2Line - Point2f(0, 8), 0, 0.4f, ColorGreen, 2);
+                        putText(src, intToString(((int)distanceP2P(lineCross, crossP))), lineCross - Point2f(0, 8), 0, 0.4f, ColorGreen, 2);
+                        //                putText(src, intToString(v[3]), ptFar - Point(0, 8), 0, 0.4f, ColorGreen, 2);
+                    }
+                    return;
+                }
+            }
+        }
+    }
+    
     
     for (int defectIdx = 0; defectIdx < defects.size(); defectIdx++) {
         Vec4i& v = defects.at(defectIdx);
@@ -399,6 +525,7 @@ void makeContours(MyImage *m, HandGesture* hg)
         if (hg->hullI[hg->cIdx].size() >= 3 ) {
             convexityDefects(hg->contours[hg->cIdx],hg->hullI[hg->cIdx],hg->defects[hg->cIdx]);	//计算凸包缺陷
         }
+        
         myDrawContours(m, hg);
     }
 }
@@ -486,6 +613,6 @@ void gestureRecognizer(cv::Mat& image, cv::Vec6i params) {
     if (showDebugMsg) {
         pyrDown(m.bw,m.bw);
         pyrDown(m.bw,m.bw);
-        cvtColor(m.bw, m.src(Rect({m.src.cols - m.bw.cols, 0}, m.bw.size())), CV_GRAY2RGBA);
+        cvtColor(m.bw, m.src(Rect({0, 0}, m.bw.size())), CV_GRAY2RGBA);
     }
 }
