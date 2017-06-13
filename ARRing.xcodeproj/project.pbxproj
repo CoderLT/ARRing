@@ -87,7 +87,7 @@
 		A034E4091EBEA3A100D11AEA /* ATTextViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A034E3901EBEA3A100D11AEA /* ATTextViewCell.xib */; };
 		A034E40A1EBEA3A100D11AEA /* ATTitleTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A034E3921EBEA3A100D11AEA /* ATTitleTextFieldCell.m */; };
 		A034E40B1EBEA3A100D11AEA /* ATTitleTextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A034E3931EBEA3A100D11AEA /* ATTitleTextFieldCell.xib */; };
-		A039B7C71EB7985500ED71C9 /* ring.png in Resources */ = {isa = PBXBuildFile; fileRef = A039B7C61EB7985500ED71C9 /* ring.png */; };
+		A039B7C71EB7985500ED71C9 /* ring2.png in Resources */ = {isa = PBXBuildFile; fileRef = A039B7C61EB7985500ED71C9 /* ring2.png */; };
 		A039B8161EB8E72E00ED71C9 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = A039B8131EB8E72E00ED71C9 /* art.scnassets */; };
 		A039B8171EB8E72E00ED71C9 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A039B8151EB8E72E00ED71C9 /* GameViewController.m */; };
 		A039B8191EB8E83100ED71C9 /* WechatIMG20.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = A039B8181EB8E83100ED71C9 /* WechatIMG20.jpeg */; };
@@ -105,6 +105,10 @@
 		A047D5EE1EB5749600C4E2D9 /* myImage.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A047D5EB1EB5749600C4E2D9 /* myImage.cpp */; };
 		A047D5F01EB5753800C4E2D9 /* libjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5EF1EB5753800C4E2D9 /* libjpeg.a */; };
 		A047D5F21EB5757400C4E2D9 /* libturbojpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A047D5F11EB5757400C4E2D9 /* libturbojpeg.a */; settings = {ATTRIBUTES = (Weak, ); }; };
+		A05EBC9A1EEEF6E30050225F /* ATHightlightButton.m in Sources */ = {isa = PBXBuildFile; fileRef = A05EBC991EEEF6E30050225F /* ATHightlightButton.m */; };
+		A06F68861ED349BE003D0C16 /* IMG_5273.png in Resources */ = {isa = PBXBuildFile; fileRef = A06F68851ED349BE003D0C16 /* IMG_5273.png */; };
+		A06F68891ED359AC003D0C16 /* ATLine.m in Sources */ = {isa = PBXBuildFile; fileRef = A06F68881ED359AC003D0C16 /* ATLine.m */; };
+		A06F688B1ED3C06B003D0C16 /* ring.png in Resources */ = {isa = PBXBuildFile; fileRef = A06F688A1ED3C06B003D0C16 /* ring.png */; };
 		A080E9491EB8EFEF00A1F1BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A080E9471EB8EFEF00A1F1BD /* LaunchScreen.storyboard */; };
 		CFB09C5B3B52DBAC5E3A771D /* libPods-ARRing.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1C73EE09F112D991CD16C6D /* libPods-ARRing.a */; };
 /* End PBXBuildFile section */
@@ -264,7 +268,7 @@
 		A034E3911EBEA3A100D11AEA /* ATTitleTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATTitleTextFieldCell.h; sourceTree = "<group>"; };
 		A034E3921EBEA3A100D11AEA /* ATTitleTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATTitleTextFieldCell.m; sourceTree = "<group>"; };
 		A034E3931EBEA3A100D11AEA /* ATTitleTextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ATTitleTextFieldCell.xib; sourceTree = "<group>"; };
-		A039B7C61EB7985500ED71C9 /* ring.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ring.png; sourceTree = "<group>"; };
+		A039B7C61EB7985500ED71C9 /* ring2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ring2.png; sourceTree = "<group>"; };
 		A039B8131EB8E72E00ED71C9 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
 		A039B8141EB8E72E00ED71C9 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		A039B8151EB8E72E00ED71C9 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
@@ -291,6 +295,12 @@
 		A047D5EC1EB5749600C4E2D9 /* myImage.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = myImage.hpp; sourceTree = "<group>"; };
 		A047D5EF1EB5753800C4E2D9 /* libjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjpeg.a; sourceTree = "<group>"; };
 		A047D5F11EB5757400C4E2D9 /* libturbojpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libturbojpeg.a; sourceTree = "<group>"; };
+		A05EBC981EEEF6E30050225F /* ATHightlightButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATHightlightButton.h; sourceTree = "<group>"; };
+		A05EBC991EEEF6E30050225F /* ATHightlightButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATHightlightButton.m; sourceTree = "<group>"; };
+		A06F68851ED349BE003D0C16 /* IMG_5273.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IMG_5273.png; sourceTree = "<group>"; };
+		A06F68871ED359AC003D0C16 /* ATLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ATLine.h; sourceTree = "<group>"; };
+		A06F68881ED359AC003D0C16 /* ATLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ATLine.m; sourceTree = "<group>"; };
+		A06F688A1ED3C06B003D0C16 /* ring.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ring.png; sourceTree = "<group>"; };
 		A080E9481EB8EFEF00A1F1BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = ARRing/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B1C73EE09F112D991CD16C6D /* libPods-ARRing.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ARRing.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C362FFCAD59755796F8E758E /* Pods-ARRing.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ARRing.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ARRing/Pods-ARRing.debug.xcconfig"; sourceTree = "<group>"; };
@@ -642,14 +652,20 @@
 				A034E2791EBEA3A100D11AEA /* Classes */,
 				A034E0C91EB8F22100D11AEA /* jiezhi4.scn */,
 				A039B8181EB8E83100ED71C9 /* WechatIMG20.jpeg */,
+				A06F68851ED349BE003D0C16 /* IMG_5273.png */,
+				A05EBC981EEEF6E30050225F /* ATHightlightButton.h */,
+				A05EBC991EEEF6E30050225F /* ATHightlightButton.m */,
 				A039B8131EB8E72E00ED71C9 /* art.scnassets */,
 				A039B8141EB8E72E00ED71C9 /* GameViewController.h */,
 				A039B8151EB8E72E00ED71C9 /* GameViewController.m */,
-				A039B7C61EB7985500ED71C9 /* ring.png */,
+				A06F688A1ED3C06B003D0C16 /* ring.png */,
+				A039B7C61EB7985500ED71C9 /* ring2.png */,
 				A047D5BC1EB4DD3C00C4E2D9 /* AppDelegate.h */,
 				A047D5BD1EB4DD3C00C4E2D9 /* AppDelegate.m */,
 				A047D5BF1EB4DD3C00C4E2D9 /* ViewController.h */,
 				A047D5C01EB4DD3C00C4E2D9 /* ViewController.mm */,
+				A06F68871ED359AC003D0C16 /* ATLine.h */,
+				A06F68881ED359AC003D0C16 /* ATLine.m */,
 				A047D5E91EB5749600C4E2D9 /* handGesture.cpp */,
 				A047D5EA1EB5749600C4E2D9 /* handGesture.hpp */,
 				A047D5EB1EB5749600C4E2D9 /* myImage.cpp */,
@@ -762,6 +778,7 @@
 				A047D5C61EB4DD3C00C4E2D9 /* Assets.xcassets in Resources */,
 				A034E40B1EBEA3A100D11AEA /* ATTitleTextFieldCell.xib in Resources */,
 				A039B8161EB8E72E00ED71C9 /* art.scnassets in Resources */,
+				A06F688B1ED3C06B003D0C16 /* ring.png in Resources */,
 				A039B8191EB8E83100ED71C9 /* WechatIMG20.jpeg in Resources */,
 				A034E0C81EB8F13A00D11AEA /* Main.storyboard in Resources */,
 				A034E3FB1EBEA3A100D11AEA /* ATBaseXIBCollectionCell.xib in Resources */,
@@ -771,8 +788,9 @@
 				A034E4091EBEA3A100D11AEA /* ATTextViewCell.xib in Resources */,
 				A034E4071EBEA3A100D11AEA /* ATTextFieldCell.xib in Resources */,
 				A034E3EB1EBEA3A100D11AEA /* Localizable.strings in Resources */,
+				A06F68861ED349BE003D0C16 /* IMG_5273.png in Resources */,
 				A080E9491EB8EFEF00A1F1BD /* LaunchScreen.storyboard in Resources */,
-				A039B7C71EB7985500ED71C9 /* ring.png in Resources */,
+				A039B7C71EB7985500ED71C9 /* ring2.png in Resources */,
 				A034E3F91EBEA3A100D11AEA /* ATBaseXIBCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -846,6 +864,7 @@
 				A034E3A91EBEA3A100D11AEA /* ATNavigationViewController.m in Sources */,
 				A034E4081EBEA3A100D11AEA /* ATTextViewCell.m in Sources */,
 				A034E3A61EBEA3A100D11AEA /* ATBaseTableViewController.m in Sources */,
+				A06F68891ED359AC003D0C16 /* ATLine.m in Sources */,
 				A047D5ED1EB5749600C4E2D9 /* handGesture.cpp in Sources */,
 				A034E3AA1EBEA3A100D11AEA /* ATRefreshWebController.m in Sources */,
 				A034E3B51EBEA3A100D11AEA /* ATAlertView.m in Sources */,
@@ -896,6 +915,7 @@
 				A034E3F11EBEA3A100D11AEA /* ATOnline.m in Sources */,
 				A034E3E91EBEA3A100D11AEA /* ATLaunchController.m in Sources */,
 				A047D5BE1EB4DD3C00C4E2D9 /* AppDelegate.m in Sources */,
+				A05EBC9A1EEEF6E30050225F /* ATHightlightButton.m in Sources */,
 				A034E39D1EBEA3A100D11AEA /* UIImage+Util.m in Sources */,
 				A034E3F81EBEA3A100D11AEA /* ATBaseXIBCell.m in Sources */,
 				A034E3A31EBEA3A100D11AEA /* ATBaseController.m in Sources */,
@@ -1040,7 +1060,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = E4PD5DT5TR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1085,7 +1105,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = E4PD5DT5TR;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

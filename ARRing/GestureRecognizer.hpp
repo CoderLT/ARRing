@@ -29,13 +29,22 @@ public:
     cv::Point lastDefect;
     cv::Point nextDefect;
 };
-
+typedef enum {
+    ATDetectStateBackground = 0,
+    ATDetectStateRefrence,
+    ATDetectStateDectect,
+} ATDetectState;
 class ATHand {
 public:
     float confidence; // 0 - 1.0
     bool isLeft;
     bool isBack;
     cv::Vector<ATFinger> figers;
+    
+    int detectState;// 0: 检测背景, 1: 检测参考, 2: 检测手指
+    Vec3i backgroudHue;
+    Vector<int> referenceHue;
+    Vector<Point2i> referencePoint;
 };
 
 extern ATHand hand;

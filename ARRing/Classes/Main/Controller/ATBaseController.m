@@ -196,7 +196,7 @@
 
 ATAutoRotateImplementation
 + (UIStatusBarStyle)preferredStatusBarStyle {
-    return UIStatusBarStyleDefault;
+    return UIStatusBarStyleLightContent;
 }
 + (BOOL)prefersStatusBarHidden {
     return NO;

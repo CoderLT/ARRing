@@ -6,9 +6,9 @@
 //  Copyright © 2017年 AT. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "ATBaseController.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : ATBaseController
 
 
 @end

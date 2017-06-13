@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XEq-Uw-JFA">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="XEq-Uw-JFA">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Navigation Controller-->
+        <!--Navigation View Controller-->
         <scene sceneID="ckq-gd-7JD">
             <objects>
-                <navigationController id="XEq-Uw-JFA" sceneMemberID="viewController">
+                <navigationController id="XEq-Uw-JFA" customClass="ATNavigationViewController" sceneMemberID="viewController">
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="RIg-c2-cbS">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="jc4-aw-wH3"/>
+                        <segue destination="KhF-F3-2Mm" kind="relationship" relationship="rootViewController" id="KMy-Tq-IQM"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="79U-uQ-hmy" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -93,109 +93,31 @@
                     <view key="view" contentMode="scaleToFill" id="4f7-Bm-ha6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-f7-KOn">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <items>
-                                    <barButtonItem title="关闭闪光灯" id="lPK-C0-6lr">
-                                        <connections>
-                                            <action selector="didClickFlash:" destination="KhF-F3-2Mm" id="2aB-tl-ZRm"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem systemItem="flexibleSpace" id="pWC-ns-4ud"/>
-                                    <barButtonItem title="显示调试信息" id="wSA-ac-zKA">
-                                        <connections>
-                                            <action selector="didClickDebug:" destination="KhF-F3-2Mm" id="IN5-cR-hjy"/>
-                                        </connections>
-                                    </barButtonItem>
-                                </items>
-                            </toolbar>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="oVs-f7-KOn" secondAttribute="bottom" id="2KZ-oF-FZc"/>
-                            <constraint firstAttribute="trailing" secondItem="oVs-f7-KOn" secondAttribute="trailing" id="pSF-AD-ANa"/>
-                            <constraint firstItem="oVs-f7-KOn" firstAttribute="leading" secondItem="4f7-Bm-ha6" secondAttribute="leading" id="qOQ-it-Suf"/>
-                        </constraints>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="iQL-0C-jdC">
-                        <barButtonItem key="rightBarButtonItem" title="说明" id="wAO-IS-PLc">
+                        <barButtonItem key="rightBarButtonItem" image="关闭调试信息" id="wSA-ac-zKA">
                             <connections>
-                                <segue destination="gZj-fA-nhR" kind="show" id="j6z-c1-B6s"/>
+                                <action selector="didClickDebug:" destination="KhF-F3-2Mm" id="IN5-cR-hjy"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="debugItem" destination="wSA-ac-zKA" id="cAC-5G-NkY"/>
-                        <outlet property="flashItem" destination="lPK-C0-6lr" id="Gjv-yu-BLe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="w71-uU-4eG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-279" y="421"/>
-        </scene>
-        <!--Table View Controller-->
-        <scene sceneID="IUb-TY-94R">
-            <objects>
-                <tableViewController id="gZj-fA-nhR" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="3ed-fK-iXz">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <view key="tableFooterView" contentMode="scaleToFill" id="c6Z-0f-wpp">
-                            <rect key="frame" x="0.0" y="72" width="375" height="421"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t2H-HL-5DZ">
-                                    <rect key="frame" x="15" y="15" width="345" height="229.5"/>
-                                    <string key="text">Demo阶段玩法说明:
-1. 只适配了左手, 背面, 中指
-2. 五只尽量伸直张开, 保存手掌轮廓都在镜头內
-3. 不要背光!!!!!
-4. 背景最好是深色的
-5. 手掌缓慢旋转移动
-
-PS: 预计优化空间: 
-1. 识别 左右手 或者 正反面
-2. 戒指可选带手指(无名指, 食指, 中指)
-3. 贴图换成模型, 支持小范围手掌翻转(小于20°)
-4. 手指特征点追踪, 移动时更稳当</string>
-                                    <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                    <color key="textColor" red="0.20000000000000001" green="0.20000000000000001" blue="0.20000000000000001" alpha="1" colorSpace="calibratedRGB"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstAttribute="trailing" secondItem="t2H-HL-5DZ" secondAttribute="trailing" constant="15" id="5id-xs-rPh"/>
-                                <constraint firstItem="t2H-HL-5DZ" firstAttribute="top" secondItem="c6Z-0f-wpp" secondAttribute="top" constant="15" id="6Fh-Md-z0l"/>
-                                <constraint firstItem="t2H-HL-5DZ" firstAttribute="leading" secondItem="c6Z-0f-wpp" secondAttribute="leading" constant="15" id="F8Q-Jr-AQV"/>
-                            </constraints>
-                        </view>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="aUu-hd-rhQ">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aUu-hd-rhQ" id="GTl-v8-x2B">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
-                        <connections>
-                            <outlet property="dataSource" destination="gZj-fA-nhR" id="2yS-GN-JhE"/>
-                            <outlet property="delegate" destination="gZj-fA-nhR" id="OQ0-8x-tub"/>
-                        </connections>
-                    </tableView>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="9Og-53-fJ4" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="562.39999999999998" y="418.74062968515744"/>
+            <point key="canvasLocation" x="-279.19999999999999" y="419.64017991004499"/>
         </scene>
     </scenes>
     <resources>
         <image name="WechatIMG20.jpeg" width="720" height="1280"/>
+        <image name="关闭调试信息" width="20" height="20"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="KMy-Tq-IQM"/>
+    </inferredMetricsTieBreakers>
 </document>

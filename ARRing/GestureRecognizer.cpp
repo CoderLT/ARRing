@@ -210,8 +210,8 @@ void myDrawContours(MyImage *m,HandGesture *hg)
         drawContours(m->src, hg->contours, hg->cIdx, ColorBlue, 2, 1); // 绘制轮廓线
     }
     
-    if ((hg->bRect.size().width + 10 >= src.cols && hg->bRect.size().height * 1.2 >= src.rows)
-        || (hg->bRect.size().width * 1.2 >= src.cols && hg->bRect.size().height + 10 >= src.rows)) {
+    if ((hg->bRect.size().width + 10 >= src.cols && hg->bRect.size().height * 1.1 >= src.rows)
+        || (hg->bRect.size().width * 1.1 >= src.cols && hg->bRect.size().height + 10 >= src.rows)) {
         vector<int> hullIs = hg->hullI[hg->cIdx];
         float minD = MAXFLOAT;
         int index = -1;
@@ -544,21 +544,21 @@ void SkinRGB(MyImage *m)
     unsigned char* p_src = (unsigned char*)m->srcLR.data;
     unsigned char* p_dst = (unsigned char*)m->bw.data;
     
-//    for (int j = 0; j < height; j++){
-//        for (int i = 0; i < width; i++){
-//            int offset = j * step + i * channel;
-//            int b = p_src[offset + 0], g = p_src[offset + 1], r = p_src[offset + 2];
-//            //均匀照明：R > 95 && G > 40 && B > 20 && R - B > 15 && R - G > 15 && R > B
-//            //侧向照明: R > 200 && G > 210 && B > 170 && R - B <= 15 && R > B && G > B
-//            if ((r > 95 && g > 40 && b > 20 && (r - b) > 15 && (r - g) > 15)
-//                || (r > 200 && g > 210 && b > 170 && ((r > g && r - g <= 15) || (g > r && g - r <= 15)) && r > b && g > b)) {
-//                p_dst[j * width + i] = 255;
-//            }
-//            else {
-//                p_dst[j * width + i] = 0;
-//            }
-//        }
-//    }
+    for (int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++){
+            int offset = j * step + i * channel;
+            int b = p_src[offset + 0], g = p_src[offset + 1], r = p_src[offset + 2];
+            //均匀照明：R > 95 && G > 40 && B > 20 && R - B > 15 && R - G > 15 && R > B
+            //侧向照明: R > 200 && G > 210 && B > 170 && R - B <= 15 && R > B && G > B
+            if ((r > 95 && g > 40 && b > 20 && (r - b) > 15 && (r - g) > 15)
+                || (r > 200 && g > 210 && b > 170 && ((r > g && r - g <= 15) || (g > r && g - r <= 15)) && r > b && g > b)) {
+                p_dst[j * width + i] = 255;
+            }
+            else {
+                p_dst[j * width + i] = 0;
+            }
+        }
+    }
     
     cvtColor(m->srcLR, m->srcLR, CV_BGR2HLS);
     for (int j = 0; j < height; j++){
@@ -602,12 +602,50 @@ void SkinRGB(MyImage *m)
     morphologyEx(m->bw, m->bw, MORPH_CLOSE, element);
 }
 
+void SkinRGB2(MyImage *m)
+{
+    m->bw = Mat(m->srcLR.rows, m->srcLR.cols, CV_8UC1);
+    
+    int height = m->srcLR.rows, width = m->srcLR.cols, channel = m->srcLR.channels(), step = (int)m->srcLR.step;
+    unsigned char* p_src = (unsigned char*)m->srcLR.data;
+    unsigned char* p_dst = (unsigned char*)m->bw.data;
+    
+    int diff = 10;
+    for (int j = 0; j < height; j++){
+        for (int i = 0; i < width; i++){
+            int offset = j * step + i * channel;
+            int h = p_src[offset + 0];
+            
+            
+            p_dst[j * width + i] = 0;
+            for (int n = 0; n < hand.referenceHue.size(); n++) {
+                int H = hand.referenceHue[n];
+                
+                if (h < H + diff && h > H - diff) {
+                    p_dst[j * width + i] = 255;
+                    break;
+                }
+            }
+        }
+    }
+    
+    
+    medianBlur(m->bw, m->bw, 9);
+    
+    // 形态学操作，去除噪声，并使手的边界更加清晰
+    Mat element = getStructuringElement(MORPH_RECT, Size(3,3));
+    erode(m->bw, m->bw, element);
+    morphologyEx(m->bw, m->bw, MORPH_OPEN, element);
+    dilate(m->bw, m->bw, element);
+    morphologyEx(m->bw, m->bw, MORPH_CLOSE, element);
+}
+
+
 void showRGB(MyImage *m) {
     /// 分割成3个单通道图像 ( R, G 和 B )
     vector<Mat> rgb_planes;
-    cvtColor(m->srcLR, m->histImage, CV_BGR2HSV);
+    cvtColor(m->srcLR, m->histImage, CV_BGR2HLS_FULL);
     split( m->histImage, rgb_planes );
-    
     /// 设定bin数目
     int histSize = 32;
     int channels[]={0,1};
@@ -635,12 +673,12 @@ void showRGB(MyImage *m) {
     normalize(histImage,histNormal,0,255,NORM_MINMAX,-1,Mat());
     calcBackProject(&m->histImage,2,channels,histNormal,histImage,&histRange,1,true);
     
-    /// 将直方图归一化到范围 [ 0, histImage.rows ]
+    // 将直方图归一化到范围 [ 0, histImage.rows ]
     normalize(r_hist, r_hist, 0, histImage.rows, NORM_MINMAX, -1, Mat() );
     
-    cvtColor(histImage, histImage, CV_GRAY2BGR);
+    cvtColor(histImage, histImage, CV_GRAY2RGB);
     
-    /// 在直方图画布上画出直方图
+    // 在直方图画布上画出直方图
     Point p0 = Point(0, histImage.rows);
     for( int i = 0; i < histSize; i++ ) {
         int n = cvRound(r_hist.at<float>(i));
@@ -656,17 +694,61 @@ void showRGB(MyImage *m) {
     m->histImage = histImage;
 }
 
+void setupBackground(Mat src) {
+    pyrDown(src, src);
+    pyrDown(src, src);
+    
+}
+
 void gestureRecognizer(cv::Mat& image, cv::Vec6i params) {
+    showDebugMsg = params[0];
+    if (hand.referencePoint.size() == 0) {
+        hand.referencePoint.push_back(Point2i(104, 366));
+        hand.referencePoint.push_back(Point2i(171, 322));
+        hand.referencePoint.push_back(Point2i(239, 328));
+        hand.referencePoint.push_back(Point2i(288, 352));
+        hand.referencePoint.push_back(Point2i(152, 408));
+        hand.referencePoint.push_back(Point2i(229, 450));
+        hand.referencePoint.push_back(Point2i(260, 243));
+        hand.referencePoint.push_back(Point2i(182, 253));
+        hand.referencePoint.push_back(Point2i(316, 299));
+//        hand.referencePoint.push_back(Point2i(230, 302));
+//        hand.referencePoint.push_back(Point2i(371, 168));
+//        hand.referencePoint.push_back(Point2i(328, 250));
+//        hand.referencePoint.push_back(Point2i(285, 321));
+//        hand.referencePoint.push_back(Point2i(261, 406));
+//        hand.referencePoint.push_back(Point2i(415, 402));
+//        hand.referencePoint.push_back(Point2i(349, 445));
+//        hand.referencePoint.push_back(Point2i(252, 456));
+    }
+    
+    if (hand.detectState == ATDetectStateBackground) {
+        if (showDebugMsg) {
+            for (int i = 0; i < hand.referencePoint.size(); i++) {
+                circle(image, hand.referencePoint[i], 2, ColorRed, 2);
+            }
+        }
+        return;
+    }
+    
     MyImage m;
     HandGesture hg;
     m.src = image;
-    
-    showDebugMsg = params[0];
-    
     pyrDown(m.src, m.srcLR);
     cvtColor(m.srcLR, m.srcLR, CV_BGRA2BGR);
-    SkinRGB(&m);
-//    showRGB(&m);
+    cvtColor(m.srcLR, m.srcLR, CV_BGR2HLS_FULL);
+    
+    if (hand.detectState == ATDetectStateRefrence) {
+        for (int i = 0; i < hand.referencePoint.size(); i++) {
+            Point2i point = hand.referencePoint[i];
+            int channel = m.srcLR.channels(), step = (int)m.srcLR.step;
+            int offset = point.y/2 * step + point.x/2 * channel;
+            hand.referenceHue.push_back(m.srcLR.data[offset + 0]);
+        }
+        hand.detectState = ATDetectStateDectect;
+    }
+    
+    SkinRGB2(&m);
     
     hand.figers.clear();
     makeContours(&m, &hg);
@@ -675,7 +757,6 @@ void gestureRecognizer(cv::Mat& image, cv::Vec6i params) {
         pyrDown(m.bw,m.bw);
         pyrDown(m.bw,m.bw);
         cvtColor(m.bw, m.src(Rect({m.src.cols - m.bw.cols, 0}, m.bw.size())), CV_GRAY2RGBA);
-        
         
 //        cvtColor(m.histImage, m.src(Rect({0, 0}, m.histImage.size())), CV_RGB2RGBA);
     }

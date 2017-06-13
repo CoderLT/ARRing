@@ -11,6 +11,8 @@
 #import <opencv2/opencv.hpp>
 #import <opencv2/highgui/ios.h>
 #include "GestureRecognizer.hpp"
+#import "ATLine.h"
+#import "ATHightlightButton.h"
 
 // Macros for time measurements
 #if 1
@@ -26,14 +28,26 @@
 
 @property (nonatomic, strong) CvVideoCamera* videoCamera;
 @property (nonatomic, strong) UIView *videoView;
+@property (nonatomic, strong) UIView *bottomView;
 @property (nonatomic, strong) UIImageView *ringImageView;
 @property (nonatomic, assign) BOOL showDebug;
 @property (nonatomic, strong) UISlider *slider0;
 @property (nonatomic, strong) UISlider *slider1;
 @property (nonatomic, strong) UISlider *slider2;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *flashItem;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *debugItem;
 @property (nonatomic, strong) AVCaptureDevice *device;
+@property (nonatomic, assign) CGPoint tapPoint;
+@property (nonatomic, assign) CGSize videoSize;
+@property (nonatomic, strong) UIImageView *mask;
+@property (nonatomic, strong) ATLine *angelLine;
+@property (nonatomic, strong) ATLine *widthLine;
+@property (nonatomic, strong) ATLine *centerXLine;
+@property (nonatomic, strong) ATLine *centerYLine;
+
+
+@property (weak, nonatomic) IBOutlet ATHightlightButton *flashItem;
+@property (weak, nonatomic) IBOutlet ATHightlightButton *startItem;
+
 
 @end
 
@@ -42,25 +56,40 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.title = @"AR试戴💍";
+    self.navigationItem.title = @"DIAMOND";
+    self.view.backgroundColor = [UIColor blackColor];
     
-    CGFloat h = self.view.frame.size.width * 640 / 480;
+    self.videoSize = CGSizeMake(480, 640);
+    CGFloat h = self.view.frame.size.width * self.videoSize.height / self.videoSize.width;
     self.videoView = [[UIView alloc] initWithFrame:CGRectMake(0,
-                                                              (self.view.frame.size.height - h) / 2,
+                                                              64 + 20,
                                                               self.view.frame.size.width,
                                                               h)];
     [self.view addSubview:self.videoView];
     
-//    self.showDebug = NO;
-    self.slider0.value = 0.5f;
-    self.slider1.value = 0.5f;
-    self.slider2.value = 0.5f;
+    self.bottomView = [[UIView alloc] init];
+    [self.view addSubview:self.bottomView];
+    [self.bottomView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.left.bottom.right.equalTo(self.bottomView.superview);
+        make.top.equalTo(self.videoView.mas_bottom);
+    }];
+    [self startItem];
+    [self flashItem];
+    
+    [self.view addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTap:)]];
+    
+    self.showDebug = YES;
+    self.angelLine = [ATLine new];
+    self.widthLine = [ATLine new];
+    self.centerYLine = [ATLine new];
+    self.centerXLine = [ATLine new];
 }
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
     [self.videoCamera start];
     self.videoCamera.delegate = self;
+    [self.videoView bringSubviewToFront:self.mask];
     [self.videoView bringSubviewToFront:self.ringImageView];
     
     // 设置允许摇一摇功能
@@ -71,8 +100,8 @@
     AVCaptureDevice *device = self.device;
     if ([device hasTorch] && [device hasFlash]){
         [device lockForConfiguration:nil];
-        [device setTorchMode:AVCaptureTorchModeOn];
-        [device setFlashMode:AVCaptureFlashModeOn];
+//        [device setTorchMode:AVCaptureTorchModeOn];
+//        [device setFlashMode:AVCaptureFlashModeOn];
         
         [device.formats enumerateObjectsUsingBlock:^(AVCaptureDeviceFormat * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSLog(@"IOS is duration: %.2f - %.2f, IOS: %.2f - %.2f", (CGFloat)obj.minExposureDuration.value / obj.minExposureDuration.timescale, (CGFloat)obj.maxExposureDuration.value / obj.maxExposureDuration.timescale, obj.minISO, obj.maxISO);
@@ -99,6 +128,14 @@
         [device unlockForConfiguration];
     }
     [self updateFlashItem];
+}
+- (void)didTap:(UITapGestureRecognizer *)tap {
+    CGPoint p = [tap locationInView:self.videoView];
+    if (CGRectContainsPoint(self.videoView.bounds, p)) {
+        p.x = p.x * self.videoSize.width / self.videoView.width;
+        p.y = p.y * self.videoSize.height / self.videoView.height;
+        self.tapPoint = p;
+    }
 }
 - (void)didValueChange:(UISlider *)slider {
 //    AVCaptureDeviceFormat *format = self.device.activeFormat;
@@ -135,13 +172,13 @@
 - (void)updateFlashItem {
     AVCaptureDevice *device = [self cameraWithPosition:AVCaptureDevicePositionBack];
     if ([device hasTorch] && [device hasFlash]){
-        self.flashItem.title = (device.isFlashActive ? @"关闭闪光灯" : @"打开闪光灯");
+//        self.flashItem.title = (device.isFlashActive ? @"关闭闪光灯" : @"打开闪光灯");
     }
 }
 - (void)setShowDebug:(BOOL)showDebug {
     _showDebug = showDebug;
     
-    self.debugItem.title = (_showDebug ? @"关闭调试信息" : @"显示调试信息");
+//    self.debugItem.title = (_showDebug ? @"关闭调试信息" : @"显示调试信息");
 }
 //前后摄像头
 - (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
@@ -163,8 +200,9 @@
     
     cv::Vec6i params = {0,0,0,0,0,0};
     params[0] = self.showDebug;
-//    params[1] = (int)(self.slider0.value * 20);
-//    params[2] = (int)(self.slider1.value * 20);
+    params[1] = self.tapPoint.x;
+    params[2] = self.tapPoint.y;
+    self.tapPoint = CGPointZero;
 //    params[3] = (int)(self.slider2.value * 20);
 //    
 //    printf("%d/%d/%d/%d/%d/%d  ", params[0], params[1], params[2], params[3], params[4], params[5]);
@@ -178,15 +216,20 @@
         if (finger.index == 2) {
             float scale = (self.videoView.frame.size.width / image.cols);
             cv::Point2f center = Point2f(finger.ringLine[2], finger.ringLine[3]) * scale;
-            float width = finger.size.width * scale;
+            float width = finger.size.width * scale * 1.1;
             float angle = atan2f(finger.ringLine[1], finger.ringLine[0]);
+            [self.angelLine push:angle];
+            [self.widthLine push:width];
+            [self.centerXLine push:center.x];
+            [self.centerYLine push:center.y];
 //            printf("%f \n", angle * 180 / M_PI);
             dispatch_async(dispatch_get_main_queue(), ^{
                 __strong typeof(weakSelf) strongSelf = weakSelf;
+                CGFloat width = self.widthLine.value;
                 strongSelf.ringImageView.transform = CGAffineTransformIdentity;
                 strongSelf.ringImageView.frame = CGRectMake(0, 0, width, self.ringImageView.image.size.height * width / self.ringImageView.image.size.width);
-                strongSelf.ringImageView.center = CGPointMake(center.x, center.y);
-                strongSelf.ringImageView.transform = CGAffineTransformMakeRotation(angle - M_PI_2);
+                strongSelf.ringImageView.center = CGPointMake(self.centerXLine.value, self.centerYLine.value);
+                strongSelf.ringImageView.transform = CGAffineTransformMakeRotation(self.angelLine.value - M_PI_2);
             });
             findFinger = YES;
             break;
@@ -196,10 +239,10 @@
         __strong typeof(weakSelf) strongSelf = weakSelf;
         CGFloat alpha = strongSelf.ringImageView.alpha;
         if (findFinger) {
-            alpha += 0.1;
+            alpha += 1/20.0f;
         }
         else {
-            alpha -= 0.1;
+            alpha -= 1/20.0f;
         }
         if (alpha > (_showDebug ? 0.5f : 1.0f)) {
             alpha = _showDebug ? 0.5f : 1.0f;
@@ -210,7 +253,21 @@
         strongSelf.ringImageView.alpha = alpha;
     });
     
-//    TE(Detect);
+    TE(Detect);
+}
+- (IBAction)didClickStart:(UIButton *)sender {
+    if (hand.detectState == ATDetectStateDectect) {
+        hand.detectState = ATDetectStateBackground;
+        sender.selected = NO;
+        self.mask.hidden = NO;
+        hand.referencePoint.clear();
+        hand.referenceHue.clear();
+    }
+    else {
+        hand.detectState = ATDetectStateRefrence;
+        sender.selected = YES;
+        self.mask.hidden = YES;
+    }
 }
 
 - (void)dealloc {
@@ -233,6 +290,27 @@
     }
     return _ringImageView;
 }
+- (UIImageView *)mask {
+    if (!_mask) {
+        _mask = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"mask22"]];
+        [self.videoView addSubview:_mask];
+        [_mask mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(_mask.superview);
+        }];
+        
+        UILabel *label = [[UILabel alloc] init];
+        label.text = @"请先寻找一面白色的背景墙, 然后点击开始";
+        label.numberOfLines = 0;
+        label.font = [UIFont systemFontOfSize:14.0f];
+        label.textColor = [UIColor whiteColor];
+        [_mask addSubview:label];
+        [label mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(label.superview).offset(0);
+            make.centerX.equalTo(label.superview);
+        }];
+    }
+    return _mask;
+}
 - (CvVideoCamera *)videoCamera {
     if (!_videoCamera) {
         _videoCamera = [[CvVideoCamera alloc] initWithParentView:self.videoView];
@@ -244,30 +322,29 @@
     }
     return _videoCamera;
 }
-//- (UISlider *)slider0 {
-//    if (!_slider0) {
-//        _slider0 = [[UISlider alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 30 * 3, self.view.frame.size.width - 24, 20)];
-//        _slider0.value = 0;
-//        [_slider0 addTarget:self action:@selector(didValueChange:) forControlEvents:UIControlEventValueChanged];
-//        [self.view addSubview:_slider0];
-//    }
-//    return _slider0;
-//}
-//- (UISlider *)slider1 {
-//    if (!_slider1) {
-//        _slider1 = [[UISlider alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 30 * 2, self.view.frame.size.width - 24, 20)];
-//        _slider1.value = 0;
-//        [_slider1 addTarget:self action:@selector(didValueChange:) forControlEvents:UIControlEventValueChanged];
-//        [self.view addSubview:_slider1];
-//    }
-//    return _slider1;
-//}
-//- (UISlider *)slider2 {
-//    if (!_slider2) {
-//        _slider2 = [[UISlider alloc] initWithFrame:CGRectMake(12, self.view.frame.size.height - 30 * 1, self.view.frame.size.width - 24, 20)];
-//        _slider2.value = 0;
-//        [self.view addSubview:_slider2];
-//    }
-//    return _slider2;
-//}
+
+- (ATHightlightButton *)flashItem {
+    if (!_flashItem) {
+        _flashItem = [ATHightlightButton buttonWithImage:[UIImage imageNamed:@"闪光灯"] target:self action:@selector(didClickFlash:)];
+        [self.bottomView addSubview:_flashItem];
+        [_flashItem mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.left.equalTo(@15);
+            make.centerY.equalTo(_flashItem.superview);
+            make.width.height.equalTo(@(60));
+        }];
+    }
+    return _flashItem;
+}
+
+- (ATHightlightButton *)startItem {
+    if (!_startItem) {
+        _startItem = [ATHightlightButton buttonWithImage:[UIImage imageNamed:@"开始"] target:self action:@selector(didClickStart:)];
+        [_startItem setImage:[UIImage imageNamed:@"清除"] forState:UIControlStateSelected];
+        [self.bottomView addSubview:_startItem];
+        [_startItem mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.center.equalTo(_startItem.superview);
+        }];
+    }
+    return _flashItem;
+}
 @end
