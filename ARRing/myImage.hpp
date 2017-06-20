@@ -12,8 +12,10 @@ class MyImage{
 public:
     MyImage();
     Mat srcLR;
+    Mat srcLRB_BGR;
     Mat src;
     Mat bw;
+    Mat bw2;
     Mat histImage;
 };
 

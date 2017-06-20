@@ -253,7 +253,7 @@
         strongSelf.ringImageView.alpha = alpha;
     });
     
-    TE(Detect);
+//    TE(Detect);
 }
 - (IBAction)didClickStart:(UIButton *)sender {
     if (hand.detectState == ATDetectStateDectect) {

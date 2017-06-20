@@ -601,27 +601,86 @@ void SkinRGB(MyImage *m)
     dilate(m->bw, m->bw, element);
     morphologyEx(m->bw, m->bw, MORPH_CLOSE, element);
 }
-
+void RGB2HLS( double *h, double *l, double *s, uint8_t r, uint8_t g, uint8_t b)
+{
+    double dr = (double)r/255;
+    double dg = (double)g/255;
+    double db = (double)b/255;
+    double cmax = MAX(dr, MAX(dg, db));
+    double cmin = MIN(dr, MIN(dg, db));
+    double cdes = cmax - cmin;
+    double hh, ll, ss;
+    
+    ll = (cmax+cmin)/2;
+    if(cdes){
+        if(ll <= 0.5)
+            ss = (cmax-cmin)/(cmax+cmin);
+        else
+            ss = (cmax-cmin)/(2-cmax-cmin);
+        
+        if(cmax == dr)
+            hh = (0+(dg-db)/cdes)*60;
+        else if(cmax == dg)
+            hh = (2+(db-dr)/cdes)*60;
+        else// if(cmax == b)
+            hh = (4+(dr-dg)/cdes)*60;
+        if(hh<0)
+            hh+=360;
+    }else
+        hh = ss = 0;
+    
+    *h = hh;
+    *l = ll;
+    *s = ss;
+}
 void SkinRGB2(MyImage *m)
 {
     m->bw = Mat(m->srcLR.rows, m->srcLR.cols, CV_8UC1);
     
     int height = m->srcLR.rows, width = m->srcLR.cols, channel = m->srcLR.channels(), step = (int)m->srcLR.step;
     unsigned char* p_src = (unsigned char*)m->srcLR.data;
+    unsigned char* p_src_bgr = (unsigned char*)m->srcLRB_BGR.data;
     unsigned char* p_dst = (unsigned char*)m->bw.data;
     
     int diff = 10;
     for (int j = 0; j < height; j++){
         for (int i = 0; i < width; i++){
             int offset = j * step + i * channel;
-            int h = p_src[offset + 0];
-            
-            
             p_dst[j * width + i] = 0;
+            
+            // 太灰的认为是墙, s值再过滤一下，只留下10>s>60的
+            int h = p_src[offset + 0];
+//            int l = p_src[offset + 1];
+//            int s = p_src[offset + 2];
+//            if (s > 60 * 2.55f || s < 10 * 2.55f) {
+////                continue;
+//            }
+            
+            // 太灰的认为是墙, rgb三个值相差不超过15的，认为是灰色，就去掉
+            int b = p_src_bgr[offset + 0];
+            int g = p_src_bgr[offset + 1];
+            int r = p_src_bgr[offset + 2];
+            if (fabs(b - g) < 15 && fabs(g - r) < 15 && fabs(r - b) < 15) {
+                continue;
+            }
+            //饱和度=（最大值－最小值）/最大值
+            int maxRGB = MAX(r, MAX(g, b));
+            int minRGB = MIN(r, MIN(g, b));
+            int s = (maxRGB - minRGB) * 100 / maxRGB;
+            if (s > 60 || s < 10) {
+                continue;
+            }
+            
+//            double hh, ll, ss;
+//            RGB2HLS(&hh, &ll, &ss, r, g, b);
+//            
+//            printf("0x%02X%02X%02X, %d %d %d, %.0f %.0f %.0f\n", r, g, b, h * 360 / 0xff, l * 100 / 0xff, s * 100 / 0xff, hh, ll * 100, ss * 100);
+            
+            // 手
             for (int n = 0; n < hand.referenceHue.size(); n++) {
                 int H = hand.referenceHue[n];
                 
-                if (h < H + diff && h > H - diff) {
+                if (h < H + diff && ((h + diff) & 0xFF) > H) {
                     p_dst[j * width + i] = 255;
                     break;
                 }
@@ -735,8 +794,8 @@ void gestureRecognizer(cv::Mat& image, cv::Vec6i params) {
     HandGesture hg;
     m.src = image;
     pyrDown(m.src, m.srcLR);
-    cvtColor(m.srcLR, m.srcLR, CV_BGRA2BGR);
-    cvtColor(m.srcLR, m.srcLR, CV_BGR2HLS_FULL);
+    cvtColor(m.srcLR, m.srcLRB_BGR, CV_BGRA2BGR);
+    cvtColor(m.srcLRB_BGR, m.srcLR, CV_BGR2HLS_FULL);
     
     if (hand.detectState == ATDetectStateRefrence) {
         for (int i = 0; i < hand.referencePoint.size(); i++) {
